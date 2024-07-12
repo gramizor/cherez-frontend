@@ -1,0 +1,39 @@
+{
+  "promotion": "Promotion",
+  "raiseAd": "Raise Ad",
+  "raiseAdDescription": "To raise an ad in the search is a paid promotion service. For the duration of the service, your ad will be in the top lines of the display. Visually, the ad does not change.  The service is activated for 3, 5 or 7 days.",
+  "connect": "Connect",
+  "adXL": "Ad",
+  "adXLDescription": "The XL magnified ad is a paid promotion service. For the duration of the service, your ad takes a horizontal view, takes up to 2 times more space in relation to a standard ad. A detailed description and additional photos will appear next to it.  The service is activated for 3, 5 or 7 days.",
+  "categoryAd": "Category",
+  "categoryAdDescription": "The pro category is a paid promotion service. The service connects to a certain category of goods or services. You can place up to 1000 ads in the connected category. It is possible to add your company's logo. The company card has the word company and the option to add a contact person.",
+  "paymentPlan": "Choose a payment plan:",
+  "readMore": "Read more...",
+  "months": " months",
+  "days": " days",
+  "days2": "days",
+  "raise": {
+    "raiseDesc1": "Raising an ad in the search is a paid promotion service. For the duration of the service, your ad will be in the top display lines of your category. Visually, the ad does not change. The service is activated for 3, 5, or 7 days.",
+    "raiseDesc2": "To activate the service, select a tariff for 3, 5, or 7 days. Click Pay. According to the selected tariff, payment details will be created automatically.",
+    "raiseDesc3_1": "In the wallet section, select the payment method and make the transfer. After confirming the payment, go to the section - my ads and activate the icon",
+    "raiseDesc3_2": " in the relevant ad. The icon will change color to green, and the paid tariff will start from this moment. You cannot cancel or suspend an already connected tariff - raise the ad. You can make changes: delete or add photos, edit the name and other ad parameters without changing the product or service being sold.",
+    "raiseDesc4": "The “Raise an Ad” promotion service works both in regular ads and in pro category ads."
+  },
+  "xl": {
+    "xlDesc1": "The XL advertisement is an enhanced paid promotion service. During the service period, your ad will take a horizontal format, occupying up to twice the space compared to a standard ad, and will include a detailed description and additional photos. The service can be activated for 3, 5, or 7 days.",
+    "xlDesc2": "To activate the service, select a plan for 3, 5, or 7 days. Click Pay. The payment details will be automatically generated according to the selected plan.",
+    "xlDesc3_1": "In the Wallet section, select a payment method and complete the transfer. After topping up your wallet, go to the My Ads section and activate the icon",
+    "xlDesc3_2": "in the desired ad. The icon will turn green, indicating that the paid plan is now active. It is not possible to cancel or suspend the already activated XL advertisement plan. You can make changes such as deleting or adding photos, editing the title, and other ad parameters, without changing the product or service being sold.",
+    "xlDesc4": "The promotion service “XL Advertisement” works for both regular ads and pro category ads."
+  },
+  "category": {
+    "categoryDesc1": "The pro category is a paid promotion service. The service is applied to a specific category of goods or services. In the connected category, you can post up to 1000 ads. You have the option to add your company's logo. The company card includes the word 'company' and the ability to add a contact person.",
+    "categoryDesc2": "A company page section has been added, where you can add a description, up to 100 photos, and place a branded banner. A search function, filters, and sorting for your ads have been added.",
+    "categoryDesc3": "To activate the service, select a plan for 1 month, 3 months, 6 months, or 12 months. Choose a category and click Pay. The payment details will be automatically generated according to the selected plan.",
+    "categoryDesc4": "In the Wallet section, select a payment method and complete the transfer. After topping up your wallet, all ads in the selected category will be marked as pro category. If you have not yet created any ads in the selected category, you can create them.",
+    "categoryDesc5": "It is not possible to cancel or suspend an already activated pro category plan. You can make changes such as deleting or adding photos, editing the title, and other category parameters.",
+    "categoryDesc6": "All ads placed in the pro category remain active until the end of the paid plan period.",
+    "categoryDesc7": "After activating the pro category promotion service, the expiration date and plan details are displayed in the Connected Services section, along with the ability to create a company page and delete the category.",
+    "categoryDesc8": "After the paid plan expires, ads are not shown and remain inactive for 20 days. During this period, you can pay for the plan again, and all ads and category settings will be restored. If you do not renew the completed pro category plan, after 20 days, all ads and settings in the selected category will be permanently deleted. Free ads in the selected category can only be placed after deleting the pro category. After deleting the pro category, all settings and ads related to this category will be deleted."
+  }
+}

@@ -1,6 +1,9 @@
 {
   "title": "Через",
   "promotion": "Продвижение",
+  "promotion_category": "Через про",
+  "promotion_xl": "Объявление xl",
+  "promotion_raise": "Поднять объявление",
   "my_announcements": "Мои объявления",
   "messages": "Сообщения",
   "saved": "Сохраненные",
@@ -45,5 +48,8 @@
   "place_ad": "Разместить объявление",
   "location": "Локация",
   "search_placeholder": "Поиск Через",
-  "brand_name": "Бренд (EN)"
+  "brand_name": "Бренд (EN)",
+  "payment_method": "Способ оплаты:",
+  "payment_method_description": "Выберите  криптовалюты, которыми хотите оплатить. Максимальная  сумма спишется со  счета,  на котором баланс выше.",
+  "pay_btn": "Оплатить"
 }

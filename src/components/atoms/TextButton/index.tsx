@@ -1,12 +1,14 @@
-import { Typography, useTheme } from '@mui/material'
+import { SxProps, Typography, useTheme } from '@mui/material'
 
 type Props = {
   isSelected: boolean
   text: string
   onClick: () => void
+  sx?: SxProps
+  isBlack?: boolean
 }
 
-const TextButton = ({ isSelected, text, onClick }: Props) => {
+const TextButton = ({ isSelected, text, onClick, sx, isBlack = false }: Props) => {
   const { palette } = useTheme()
 
   return (
@@ -17,7 +19,7 @@ const TextButton = ({ isSelected, text, onClick }: Props) => {
       sx={{
         '&:hover': {
           background: palette.primary.light,
-          color: palette.info.main,
+          color: isBlack ? palette.black : palette.info.main,
         },
         minWidth: 100,
         width: 'fit-content',
@@ -26,7 +28,8 @@ const TextButton = ({ isSelected, text, onClick }: Props) => {
         background: isSelected ? palette.primary.light : palette.customColors.lightBackground,
         borderRadius: '10px',
         padding: '12px 15px 11px',
-        color: isSelected ? palette.info.main : palette.black,
+        color: isBlack ? palette.black : isSelected ? palette.info.main : palette.black,
+        ...sx,
       }}
     >
       {text}

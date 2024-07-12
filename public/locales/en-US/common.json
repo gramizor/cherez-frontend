@@ -1,6 +1,9 @@
 {
   "title": "Cherez",
   "promotion": "Promotion",
+  "promotion_category": "Cherez pro",
+  "promotion_xl": "Ad xl",
+  "promotion_raise": "Raise an ad",
   "my_announcements": "My announcements",
   "messages": "Messages",
   "saved": "Saved",
@@ -45,5 +48,8 @@
   "place_ad": "Place ad",
   "location": "Location",
   "search_placeholder": "Search through",
-  "brand_name": "Brand (EN)"
+  "brand_name": "Brand (EN)",
+  "payment_method": "Payment method:",
+  "payment_method_description": "Select the cryptocurrencies you want to use for payment. The maximum amount will be deducted from the account with the higher balance.",
+  "pay_btn": "Pay"
 }
