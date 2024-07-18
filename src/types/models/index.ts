@@ -192,3 +192,21 @@ export type AdsState = {
     longitude: number
   }
 }
+
+export type WalletsBalances = {
+  [key: string]: number
+}
+
+export interface WalletCurrencies {
+  id: string
+  name: string
+  iconUrl: string
+}
+
+export type PriceCurrencies = {
+  [key: string]: PriceCurrency
+}
+
+export interface PriceCurrency {
+  price: string
+}

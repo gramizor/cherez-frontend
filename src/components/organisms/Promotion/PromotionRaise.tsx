@@ -1,16 +1,65 @@
 import { Box, Typography, useTheme } from '@mui/material'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import plane from 'src/assets/images/promotion/plane.svg'
 import plane_gray from 'src/assets/images/promotion/plane_gray.svg'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
-import WeekPrice from '../../molecules/PromotionPrice/WeekPrice'
 import PaymentMethod from '../../molecules/PaymentMethod'
+import ChoicePrice from '../../molecules/ChoicePrice/ChoicePrice'
+import { createAdPromotionError, createAdPromotionLoading } from '@/src/redux/selectors/promotion'
+import { useDispatch, useSelector } from 'react-redux'
+import { createAdPromotionRequestState } from '@/src/types/redux/promotion'
+import { createAdPromotionRequested } from '@/src/redux/slices/promotion'
+import toast from 'react-hot-toast'
+import TextButton from '../../atoms/TextButton'
+import BoostedAds from '../../molecules/BoostedAds/BoostedAds'
 
 const PromotionRaise = () => {
   const { palette } = useTheme()
   const { t } = useTranslation('promotion')
+  const dispatch = useDispatch()
+
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(0)
+  const [selectedCurrencyIds, setSelectedCurrencyIds] = useState<string[]>([])
+
+  const loading = useSelector(createAdPromotionLoading)
+  const error = useSelector(createAdPromotionError)
+
+  const handlePeriodSelect = (period: number) => {
+    setSelectedPeriod(period)
+  }
+
+  const handleCurrencySelect = (id: string) => {
+    setSelectedCurrencyIds(prevSelectedCurrencyIds => {
+      if (prevSelectedCurrencyIds.includes(id)) {
+        return prevSelectedCurrencyIds.filter(currencyId => currencyId !== id)
+      } else {
+        return [...prevSelectedCurrencyIds, id]
+      }
+    })
+  }
+
+  const handleSubmit = () => {
+    const payload: createAdPromotionRequestState = {
+      promotionName: 'boost',
+      tariffDays: selectedPeriod,
+      paymentMethods: selectedCurrencyIds,
+    }
+    dispatch(createAdPromotionRequested(payload))
+
+    if (!loading) {
+      if (error !== null) {
+        toast.error(error, {
+          duration: 3000,
+        })
+      } else {
+        toast.success(t('promotionSuccess'), {
+          duration: 3000,
+        })
+      }
+    }
+  }
 
   return (
     <>
@@ -42,8 +91,12 @@ const PromotionRaise = () => {
       <Typography mb={2} fontSize="16px" lineHeight="146%">
         {t('raise.raiseDesc4')}
       </Typography>
-      <WeekPrice />
-      <PaymentMethod />
+      <ChoicePrice content="week" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
+      <PaymentMethod selectedCurrencyIds={selectedCurrencyIds} onCurrencySelect={handleCurrencySelect} />
+      <Box display="flex" justifyContent="flex-end" mb={4}>
+        <TextButton isSelected={true} text={t('common.pay_btn')} sx={{ fontWeight: 600 }} onClick={handleSubmit} />
+      </Box>
+      <BoostedAds content="boost" />
     </>
   )
 }

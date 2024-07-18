@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
 import plane from 'src/assets/images/promotion/plane.svg'
@@ -7,12 +7,19 @@ import xl from 'src/assets/images/promotion/xl.svg'
 import pro from 'src/assets/images/promotion/pro.svg'
 import TextButton from '../../atoms/TextButton'
 import Link from 'next/link'
-import YearPrice from '../../molecules/PromotionPrice/YearPrice'
-import WeekPrice from '../../molecules/PromotionPrice/WeekPrice'
+import ChoicePrice from '../../molecules/ChoicePrice/ChoicePrice'
+import { useRouter } from 'next/router'
 
 const PromotionMain: React.FC = () => {
   const { palette } = useTheme()
   const { t } = useTranslation('promotion')
+  const router = useRouter()
+
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(0)
+
+  const handlePeriodSelect = (period: number) => {
+    setSelectedPeriod(period)
+  }
 
   return (
     <>
@@ -38,9 +45,15 @@ const PromotionMain: React.FC = () => {
             {t('readMore')}
           </Typography>
         </Link>
-        <WeekPrice />
+        <ChoicePrice content="week" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
         <Box display="flex" justifyContent="flex-end" mb={4}>
-          <TextButton isSelected={true} text={t('connect')} onClick={() => {}} />
+          <TextButton
+            isSelected={true}
+            text={t('connect')}
+            onClick={() => {
+              router.push('promotion/raise')
+            }}
+          />
         </Box>
         <Box sx={{ borderBottom: '1px solid #D9D9D9', mb: 4 }} />
       </Box>
@@ -67,9 +80,15 @@ const PromotionMain: React.FC = () => {
             {t('readMore')}
           </Typography>
         </Link>
-        <WeekPrice />
+        <ChoicePrice content="week" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
         <Box display="flex" justifyContent="flex-end" mb={4}>
-          <TextButton isSelected={true} text={t('connect')} onClick={() => {}} />
+          <TextButton
+            isSelected={true}
+            text={t('connect')}
+            onClick={() => {
+              router.push('promotion/xl')
+            }}
+          />
         </Box>
         <Box sx={{ borderBottom: '1px solid #D9D9D9', mb: 4 }} />
       </Box>
@@ -96,9 +115,15 @@ const PromotionMain: React.FC = () => {
             {t('readMore')}
           </Typography>
         </Link>
-        <YearPrice />
+        <ChoicePrice content="year" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
         <Box display="flex" justifyContent="flex-end">
-          <TextButton isSelected={true} text={t('connect')} onClick={() => {}} />
+          <TextButton
+            isSelected={true}
+            text={t('connect')}
+            onClick={() => {
+              router.push('promotion/category')
+            }}
+          />
         </Box>
       </Box>
     </>
