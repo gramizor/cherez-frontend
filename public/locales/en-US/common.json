@@ -5,6 +5,7 @@
   "promotion_xl": "Ad xl",
   "promotion_raise": "Raise an ad",
   "my_announcements": "My announcements",
+  "pro_category": "Category pro",
   "messages": "Messages",
   "saved": "Saved",
   "wallet": "Wallet",
@@ -51,5 +52,9 @@
   "brand_name": "Brand (EN)",
   "payment_method": "Payment method:",
   "payment_method_description": "Select the cryptocurrencies you want to use for payment. The maximum amount will be deducted from the account with the higher balance.",
-  "pay_btn": "Pay"
+  "pay_btn": "Pay",
+  "date": {
+    "connected_before": "Connected from",
+    "connected_after": "to"
+  }
 }

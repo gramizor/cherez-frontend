@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from '@mui/material'
+import { Box, Button, Typography, useTheme } from '@mui/material'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
 import React, { useState } from 'react'
@@ -14,6 +14,7 @@ import { createAdPromotionRequested } from '@/src/redux/slices/promotion'
 import toast from 'react-hot-toast'
 import TextButton from '../../atoms/TextButton'
 import BoostedAds from '../../molecules/BoostedAds/BoostedAds'
+import useRequestStatus from '@/src/utils/useRequestStatus'
 
 const PromotionRaise = () => {
   const { palette } = useTheme()
@@ -40,25 +41,19 @@ const PromotionRaise = () => {
     })
   }
 
+  const [startRequest] = useRequestStatus(loading, error, t('promotionSuccess'))
   const handleSubmit = () => {
     const payload: createAdPromotionRequestState = {
       promotionName: 'boost',
       tariffDays: selectedPeriod,
       paymentMethods: selectedCurrencyIds,
     }
+    startRequest()
     dispatch(createAdPromotionRequested(payload))
+  }
 
-    if (!loading) {
-      if (error !== null) {
-        toast.error(error, {
-          duration: 3000,
-        })
-      } else {
-        toast.success(t('promotionSuccess'), {
-          duration: 3000,
-        })
-      }
-    }
+  const isDisable = () => {
+    return !selectedPeriod || selectedCurrencyIds.length === 0
   }
 
   return (
@@ -94,7 +89,24 @@ const PromotionRaise = () => {
       <ChoicePrice content="week" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
       <PaymentMethod selectedCurrencyIds={selectedCurrencyIds} onCurrencySelect={handleCurrencySelect} />
       <Box display="flex" justifyContent="flex-end" mb={4}>
-        <TextButton isSelected={true} text={t('common.pay_btn')} sx={{ fontWeight: 600 }} onClick={handleSubmit} />
+        <Button
+          sx={{
+            minWidth: 150,
+            fontWeight: 600,
+            fontSize: '16px',
+            width: 'fit-content',
+            textAlign: 'center',
+            cursor: 'pointer',
+            background: isDisable() ? palette.customColors.lightBackground : palette.primary.light,
+            borderRadius: '10px',
+            padding: '12px 15px 11px',
+            color: palette.info.main,
+          }}
+          disabled={isDisable()}
+          onClick={handleSubmit}
+        >
+          {t('common:pay_btn')}
+        </Button>
       </Box>
       <BoostedAds content="boost" />
     </>

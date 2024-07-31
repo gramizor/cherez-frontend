@@ -1,9 +1,10 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Typography, useTheme } from '@mui/material'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import xl from 'src/assets/images/promotion/xl.svg'
 import xl_gray from 'src/assets/images/promotion/xl_gray.svg'
+import xlScreen from 'src/assets/images/promotion/xlScreen.png'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
 import PaymentMethod from '../../molecules/PaymentMethod'
 import ChoicePrice from '../../molecules/ChoicePrice/ChoicePrice'
@@ -23,10 +24,12 @@ import {
 } from '@/src/redux/selectors/promotion'
 import toast from 'react-hot-toast'
 import BoostedAds from '../../molecules/BoostedAds/BoostedAds'
+import useRequestStatus from '@/src/utils/useRequestStatus'
 
 const PromotionXL = () => {
   const { t } = useTranslation(['promotion', 'common'])
   const dispatch = useDispatch()
+  const { palette } = useTheme()
 
   const loading = useSelector(createAdPromotionLoading)
   const error = useSelector(createAdPromotionError)
@@ -49,25 +52,20 @@ const PromotionXL = () => {
       }
     })
   }
+
+  const [startRequest] = useRequestStatus(loading, error, t('promotionSuccess'))
   const handleSubmit = () => {
     const payload: createAdPromotionRequestState = {
       promotionName: 'large',
       tariffDays: selectedPeriod,
       paymentMethods: selectedCurrencyIds,
     }
+    startRequest()
     dispatch(createAdPromotionRequested(payload))
+  }
 
-    if (!loading) {
-      if (error !== null) {
-        toast.error(error, {
-          duration: 3000,
-        })
-      } else {
-        toast.success(t('promotionSuccess'), {
-          duration: 3000,
-        })
-      }
-    }
+  const isDisable = () => {
+    return !selectedPeriod || selectedCurrencyIds.length === 0
   }
 
   return (
@@ -81,6 +79,7 @@ const PromotionXL = () => {
       <Typography mb={2} fontSize="16px" lineHeight="146%">
         {t('xl.xlDesc1')}
       </Typography>
+      <Image src={xlScreen} alt="ad example" width={536} height={338} />
       <Typography mb={2} fontSize="16px" lineHeight="146%">
         {t('xl.xlDesc2')}
       </Typography>
@@ -103,7 +102,24 @@ const PromotionXL = () => {
       <ChoicePrice content="week" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
       <PaymentMethod selectedCurrencyIds={selectedCurrencyIds} onCurrencySelect={handleCurrencySelect} />
       <Box display="flex" justifyContent="flex-end" mb={4}>
-        <TextButton isSelected={true} text={t('common.pay_btn')} sx={{ fontWeight: 600 }} onClick={handleSubmit} />
+        <Button
+          sx={{
+            minWidth: 150,
+            fontWeight: 600,
+            fontSize: '16px',
+            width: 'fit-content',
+            textAlign: 'center',
+            cursor: 'pointer',
+            background: isDisable() ? palette.customColors.lightBackground : palette.primary.light,
+            borderRadius: '10px',
+            padding: '12px 15px 11px',
+            color: palette.info.main,
+          }}
+          disabled={isDisable()}
+          onClick={handleSubmit}
+        >
+          {t('common:pay_btn')}
+        </Button>
       </Box>
       <BoostedAds content="xl" />
     </>

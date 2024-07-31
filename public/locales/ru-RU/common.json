@@ -5,6 +5,7 @@
   "promotion_xl": "Объявление xl",
   "promotion_raise": "Поднять объявление",
   "my_announcements": "Мои объявления",
+  "pro_category": "Категория pro",
   "messages": "Сообщения",
   "saved": "Сохраненные",
   "wallet": "Кошелек",
@@ -51,5 +52,9 @@
   "brand_name": "Бренд (EN)",
   "payment_method": "Способ оплаты:",
   "payment_method_description": "Выберите  криптовалюты, которыми хотите оплатить. Максимальная  сумма спишется со  счета,  на котором баланс выше.",
-  "pay_btn": "Оплатить"
+  "pay_btn": "Оплатить",
+  "date": {
+    "connected_before": "Подключен c",
+    "connected_after": "до"
+  }
 }

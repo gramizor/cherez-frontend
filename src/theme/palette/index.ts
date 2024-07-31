@@ -22,5 +22,6 @@ export const palette = {
     searchText: '#434242',
     tabText: '#2F2F2F',
     titleText: '#2D2C2C',
+    redLight: '#F14141',
   },
 }

@@ -8,7 +8,7 @@ export default function Promotion() {
 export async function getServerSideProps({ locale }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'promotion'])),
+      ...(await serverSideTranslations(locale, ['common', 'promotion', 'categories'])),
     },
   }
 }

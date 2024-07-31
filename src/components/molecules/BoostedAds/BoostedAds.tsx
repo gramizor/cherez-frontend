@@ -37,10 +37,18 @@ const BoostedAds = ({ content }: Props) => {
 
   const adsToDisplay = content === 'xl' ? adsLarge : adsBoosted
 
+  if (adsToDisplay.length === 0) {
+    return (
+      <Typography variant="h6" mb={5}>
+        {t('promotion: no_ads')}
+      </Typography>
+    )
+  }
+
   return (
     <Box display="flex" flexDirection="column">
       <Typography variant="h6">{t('connected_services')}</Typography>
-      <Box borderTop="1px solid "></Box>
+      <Box borderTop="1px solid"></Box>
       <Box display="flex" flexDirection="column" gap={2} mt={2}>
         {adsToDisplay.map((ad: any) => (
           <Card
@@ -56,23 +64,24 @@ const BoostedAds = ({ content }: Props) => {
               <IconButton sx={{ position: 'absolute', top: 10, right: 10, width: '37px', height: '37px' }}>
                 <Image src={deleteIcon} alt="delete" />
               </IconButton>
-              <Typography color={palette.black} fontSize="18px" fontWeight={600} mb={1}>
-                Услуга продвижения - {content === 'xl' ? 'Объявление XL' : 'Поднять объявление'}
+              {/* TODO добавить логику удаления объявления */}
+              <Typography color={palette.text.primary} fontSize="18px" fontWeight={600} mb={1}>
+                {t('promotion_service')} - {content === 'xl' ? 'Объявление XL' : 'Поднять объявление'}
               </Typography>
-              <Typography color={palette.black} fontSize="16px" fontWeight={600}>
-                Подключена до{' '}
+              <Typography color={palette.text.primary} fontSize="16px" fontWeight={600}>
+                {t('common:date.connectedBefore')}
                 {content === 'xl'
                   ? new Date(ad.largeBefore.iso).toLocaleString()
                   : new Date(ad.boostedBefore.iso).toLocaleString()}
               </Typography>
               <Box borderLeft="1px solid" px={2}>
-                <Typography variant="h6" color={palette.customColors.infoLabel} mt={1}>
+                <Typography variant="h6" color={palette.text.secondary} mt={1}>
                   {ad.price.toLocaleString()} {ad.currencyCode}
                 </Typography>
-                <Typography variant="body2" color={palette.customColors.infoLabel}>
+                <Typography variant="body2" color={palette.text.secondary}>
                   {ad.label}
                 </Typography>
-                <Typography variant="body2" color={palette.customColors.infoLabel}>
+                <Typography variant="body2" color={palette.text.secondary}>
                   {ad.description}
                 </Typography>
                 <Box display="flex" alignItems="center" my={1}>
@@ -83,11 +92,11 @@ const BoostedAds = ({ content }: Props) => {
                     height={16}
                     style={{ marginRight: 4 }}
                   />
-                  <Typography variant="body2" color={palette.customColors.infoLabel}>
+                  <Typography variant="body2" color={palette.text.secondary}>
                     {ad.country} {ad.city}
                   </Typography>
                 </Box>
-                <Typography variant="body2" color={palette.customColors.infoLabel}>
+                <Typography variant="body2" color={palette.text.secondary}>
                   {new Date(ad.publishedAt.iso).toLocaleString()}
                 </Typography>
               </Box>

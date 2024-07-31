@@ -1,6 +1,7 @@
 declare module '@mui/material/styles' {
   interface Palette {
     customColors: {
+      redLight: string
       darkBackground: string
       lightBackground: string
       checkbox: string

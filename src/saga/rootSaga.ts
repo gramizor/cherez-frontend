@@ -5,11 +5,21 @@ import authSaga from 'src/saga/authSaga/authSaga'
 import adSaga from 'src/saga/adSaga/adSaga'
 import accountSaga from 'src/saga/accountSaga/accountSaga'
 import adCreateSaga from 'src/saga/adCreateSaga/adCreateSaga'
-import walletSaga from 'src/saga/wallet/walletSaga'
-import promotion from 'src/saga/promotion/promotionSaga'
+import walletSaga from '@/src/saga/walletSaga/walletSaga'
+import promotionSaga from '@/src/saga/promotionSaga/promotionSaga'
+import proSaga from './proSaga/proSaga'
 
 function* rootSaga() {
-  yield all([mainSearchSaga(), authSaga(), adSaga(), accountSaga(), adCreateSaga(), walletSaga(), promotion()])
+  yield all([
+    mainSearchSaga(),
+    authSaga(),
+    adSaga(),
+    accountSaga(),
+    adCreateSaga(),
+    walletSaga(),
+    promotionSaga(),
+    proSaga(),
+  ])
 }
 
 export default rootSaga

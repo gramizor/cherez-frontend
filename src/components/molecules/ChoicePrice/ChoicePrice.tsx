@@ -29,6 +29,32 @@ const ChoicePrice: React.FC<ChoicePriceProps> = ({ content, selectedPeriod, onPe
     }
   }
 
+  const getPeriodTranslation = (period: number, content: 'year' | 'week', t: any) => {
+    if (content === 'year') {
+      switch (period) {
+        case 1:
+          return `${period} ${t('month')}`
+        case 3:
+          return `${period} ${t('months2')}`
+        case 6:
+        case 12:
+          return `${period} ${t('months')}`
+        default:
+          return ''
+      }
+    } else if (content === 'week') {
+      switch (period) {
+        case 3:
+          return `${period} ${t('days2')}`
+        case 5:
+        case 7:
+          return `${period} ${t('days')}`
+        default:
+          return ''
+      }
+    }
+  }
+
   const { prices, periods } = getContent(content)
 
   return (
@@ -47,7 +73,7 @@ const ChoicePrice: React.FC<ChoicePriceProps> = ({ content, selectedPeriod, onPe
               isBlack={true}
             />
             <Typography color={palette.black} fontSize="16px">
-              {`${period} ${content === 'year' ? t('months') : t('days')}`}
+              {getPeriodTranslation(period, content, t)}
             </Typography>
           </Box>
         ))}

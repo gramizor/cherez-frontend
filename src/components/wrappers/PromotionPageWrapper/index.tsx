@@ -9,6 +9,7 @@ import PromotionRaise from '../../organisms/Promotion/PromotionRaise'
 import PromotionXL from '../../organisms/Promotion/PromotionXL'
 import Image from 'next/image'
 import cherezPlus from 'src/assets/images/promotion/cherezplus.svg'
+import CreateCategory from '../CategoryPageWrapper/CreateCategory'
 
 interface PromotionPageWrapperProps {
   content: 'Main' | 'Category' | 'Raise' | 'XL'

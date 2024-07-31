@@ -8,6 +8,7 @@ import account from 'src/redux/slices/account'
 import adCreate from 'src/redux/slices/adCreate'
 import wallet from './slices/wallet'
 import promotion from './slices/promotion'
+import pro from './slices/pro'
 
 const combineReducer = combineReducers({
   mainSearch,
@@ -18,6 +19,7 @@ const combineReducer = combineReducers({
   adCreate,
   wallet,
   promotion,
+  pro,
 })
 
 export type RootState = ReturnType<typeof combineReducer>
