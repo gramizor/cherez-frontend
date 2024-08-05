@@ -57,5 +57,12 @@
   "ad_limit_reached": "User has reached ad limit",
   "validation_failed": "Validation failed",
   "HIRING": "Looking for a job",
-  "SEARCH": "Offering a job"
+  "SEARCH": "Offering a job",
+  "company_name": "Company name",
+  "contact_person_name": "Contact person name",
+  "company_logo": "Company logo",
+  "company_banner": "Company banner",
+  "company_description": "Company description",
+  "company_description2": "Additional company description",
+  "image_max": "Maximum image limit"
 }

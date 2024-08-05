@@ -16,7 +16,29 @@ const initialState: ProState = {
   proImageLimit: 0,
   proAdsCounter: 0,
   proProfiles: [],
-  singleProProfile: null,
+  singleProProfile: {
+    objectId: '',
+    createdAt: '',
+    updatedAt: '',
+    owner: {
+      objectId: '',
+    },
+    category: '',
+    name: '',
+    description: '',
+    contactPerson: '',
+    logoUrl: '',
+    imageUrls: [],
+    public: false,
+    startedAt: {
+      iso: '',
+    },
+    endsAt: {
+      iso: '',
+    },
+    description2: '',
+    bannerUrl: '',
+  },
 }
 
 const slice = createSlice({
@@ -120,13 +142,13 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    getCompanyProfileRequested: (state, action: PayloadAction<GetCompanyProfile>) => {
+    getCompanyProfileRequested: (state, action) => {
       state.loading = true
       state.error = null
     },
-    getCompanyProfileSucceed: (state, action: PayloadAction<ProProfile[]>) => {
+    getCompanyProfileSucceed: (state, action) => {
       state.loading = false
-      state.proProfiles = action.payload
+      state.singleProProfile = action.payload
       state.error = null
     },
     getCompanyProfileFailed: (state, action: PayloadAction<ErrorResponse>) => {

@@ -11,15 +11,17 @@ import { CreateAdForm } from '@/src/types/redux/adCreate'
 type Props = {
   label: string
   name: string
-  image: File | null
+  image: File | string | undefined
   handleChange: (
     field: string,
     value: any,
     shouldValidate?: boolean | undefined
   ) => Promise<void> | Promise<FormikErrors<CreateAdForm>>
+  fullWidth?: boolean
+  id: string
 }
 
-const LogoUpload = ({ label, image, handleChange, name }: Props) => {
+const LogoUpload = ({ label, image, handleChange, name, fullWidth, id }: Props) => {
   const { palette } = useTheme()
   const [token, setToken] = useState<string | null>(null)
   const currentUser = useSelector(getCurrentUser)
@@ -41,8 +43,8 @@ const LogoUpload = ({ label, image, handleChange, name }: Props) => {
         {label}
       </Typography>
       <Box display="flex" flexWrap="wrap" justifyContent={{ xs: 'center', md: 'flex-start' }}>
-        <Box mr={5.5} mb={5} height={115} width={115}>
-          <label htmlFor="image-file">
+        <Box mr={5.5} mb={5} height={115} width={fullWidth ? '100%' : 115}>
+          <label htmlFor={id}>
             <Box
               width={'100%'}
               height={'100%'}
@@ -67,6 +69,7 @@ const LogoUpload = ({ label, image, handleChange, name }: Props) => {
                     '&:hover': {
                       backgroundColor: palette.customColors.lightBackground,
                     },
+                    zIndex: 10,
                   }}
                   display="flex"
                   justifyContent="center"
@@ -77,10 +80,10 @@ const LogoUpload = ({ label, image, handleChange, name }: Props) => {
               )}
               {image && (
                 <Image
-                  src={URL.createObjectURL(image)}
+                  src={typeof image === 'string' ? image : image instanceof File ? URL.createObjectURL(image) : ''}
                   alt="image-file"
-                  width={115}
-                  height={115}
+                  layout="fill"
+                  objectFit="cover"
                   style={{ objectFit: 'cover' }}
                 />
               )}
@@ -92,7 +95,7 @@ const LogoUpload = ({ label, image, handleChange, name }: Props) => {
                 handleChange(name, event.target.files[0], false)
               }
             }}
-            id="image-file"
+            id={id}
             type="file"
             accept="image/png, image/gif, image/jpeg"
             style={{

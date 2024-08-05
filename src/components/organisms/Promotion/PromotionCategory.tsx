@@ -39,6 +39,7 @@ import toast from 'react-hot-toast'
 import useRequestStatus from '@/src/utils/useRequestStatus'
 import { useRouter } from 'next/router'
 import { object } from 'yup'
+import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
 
 const categories = [
   CategoriesType.Services,
@@ -254,36 +255,12 @@ const PromotionCategory: React.FC = () => {
           </Box>
         )}
       </Box>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography variant="h6" component="h2">
-            {t('common:delete_confirmation')}
-          </Typography>
-          <Typography variant="h6" component="h2">
-            {selectedId?.profileId}
-          </Typography>
-          <Box mt={2} display="flex" justifyContent="space-between">
-            <Button variant="contained" color="primary" onClick={handleDelete}>
-              {t('common:yes')}
-            </Button>
-            <Button variant="contained" color="secondary" onClick={() => setOpen(false)}>
-              {t('common:no')}
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+      <ModalDeleteConfirm
+        open={open}
+        onClose={() => setOpen(false)}
+        onDelete={handleDelete}
+        profileId={selectedId?.profileId}
+      />
     </>
   )
 }

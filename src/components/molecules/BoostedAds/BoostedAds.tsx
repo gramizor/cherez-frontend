@@ -40,7 +40,7 @@ const BoostedAds = ({ content }: Props) => {
   if (adsToDisplay.length === 0) {
     return (
       <Typography variant="h6" mb={5}>
-        {t('promotion: no_ads')}
+        {t('no_ads')}
       </Typography>
     )
   }

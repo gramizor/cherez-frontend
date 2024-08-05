@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit'
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, select, takeLatest } from 'redux-saga/effects'
 import {
   getCompanyProfile,
   findCompanyProfiles,
@@ -121,10 +121,19 @@ function* deleteCompanyProfileSaga(action: PayloadAction<DeleteCompanyProfile>) 
 
 function* saveCompanyProfileSaga(action: PayloadAction<SaveProProfile>) {
   try {
-    yield call(saveCompanyProfile, action.payload)
+    const getToken = (state: {
+      auth: {
+        currentUser: {
+          sessionToken: string
+        }
+      }
+    }) => state.auth.currentUser.sessionToken
+    const token: string = yield select(getToken)
+    yield call(saveCompanyProfile, action.payload, token)
     yield put(saveCompanyProfileSucceed())
   } catch (error: any) {
-    yield put(saveCompanyProfileFailed(error.response.data))
+    const errorMessage = error?.response?.data || 'An unknown error occurred'
+    yield put(saveCompanyProfileFailed(errorMessage))
   }
 }
 

@@ -33,52 +33,8 @@ function* create(action: PayloadAction<CreateAdForm>) {
   }
 }
 
-// function* saveServices(action: PayloadAction<SaveAdForm>) {
-//   try {
-//     const getToken = (state: {
-//       auth: {
-//         currentUser: {
-//           sessionToken: string
-//         }
-//       }
-//     }) => state.auth.currentUser.sessionToken
-//     const token: string = yield select(getToken)
-//
-//     yield call(saveServicesAd, action.payload, token)
-//
-//     runPayloadOption(action, 'onSuccess', action.payload.objectId)
-//     yield put(saveAdSucceed)
-//   } catch (error: any) {
-//     yield put(saveAdFailed(error.response.data.error))
-//     runPayloadOption(action, 'onFailed', error.response.data.error)
-//   }
-// }
-//
-// function* saveVehicle(action: PayloadAction<SaveAdForm>) {
-//   try {
-//     const getToken = (state: {
-//       auth: {
-//         currentUser: {
-//           sessionToken: string
-//         }
-//       }
-//     }) => state.auth.currentUser.sessionToken
-//     const token: string = yield select(getToken)
-//
-//     yield call(saveVehicleAd, action.payload, token)
-//
-//     runPayloadOption(action, 'onSuccess', action.payload.objectId)
-//     yield put(saveAdSucceed)
-//   } catch (error: any) {
-//     yield put(saveAdFailed(error.response.data.error))
-//     runPayloadOption(action, 'onFailed', error.response.data.error)
-//   }
-// }
-
 function* adCreateSaga() {
   yield takeLatest(createAdRequested, create)
-  // yield takeLatest(saveServicesAdRequested, saveServices)
-  // yield takeLatest(saveVehicleAdRequested, saveVehicle)
 }
 
 export default adCreateSaga

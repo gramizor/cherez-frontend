@@ -11,7 +11,7 @@ import { CreateAdForm } from '@/src/types/redux/adCreate'
 type Props = {
   label: string
   name: string
-  images: File[]
+  images: File[] | string[]
   handleChange: (
     field: string,
     value: any,
@@ -82,7 +82,7 @@ const SimpleFileUploader = ({ label, images, handleChange, name }: Props) => {
                 )}
                 {images[i] && (
                   <Image
-                    src={URL.createObjectURL(images[i])}
+                    src={typeof images[i] === 'string' ? images[i] : URL.createObjectURL(images[i])}
                     alt={`image-file-${i}`}
                     width={115}
                     height={115}

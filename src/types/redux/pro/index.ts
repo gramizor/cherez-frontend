@@ -6,7 +6,7 @@ export interface ProState {
   proImageLimit: number
   proAdsCounter: number
   proProfiles: ProProfile[]
-  singleProProfile: ProProfile | null
+  singleProProfile: ProProfile
 }
 
 export interface GetCompanyProfile {
@@ -34,9 +34,9 @@ export interface SaveProProfile {
   companyDescription: string
   companyDescription2: string
   contactPersonName: string
-  companyLogo: string
-  companyBanner: string
-  companyImages: File[]
+  companyLogo: File | string | undefined
+  companyBanner: File | string | undefined
+  companyImages: File[] | string[]
   isPublic: boolean
 }
 

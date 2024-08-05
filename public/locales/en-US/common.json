@@ -56,5 +56,8 @@
   "date": {
     "connected_before": "Connected from",
     "connected_after": "to"
-  }
+  },
+  "delete_confirmation": "Delete confirmation",
+  "are_you_sure": "Are you sure you want to delete",
+  "delete": "Delete"
 }

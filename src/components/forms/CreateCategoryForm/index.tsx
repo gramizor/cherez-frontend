@@ -1,44 +1,49 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 import { useFormik, FormikErrors } from 'formik'
 import { useTranslation } from 'next-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Button, Grid, Typography, useTheme } from '@mui/material'
 import { useRouter } from 'next/router'
-import { selectSingleProProfile } from '@/src/redux/selectors/pro'
+import { selectProImageLimit, selectSingleProProfile } from '@/src/redux/selectors/pro'
 import { SaveProProfile } from '@/src/types/redux/pro'
 import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
-import { saveCompanyProfileRequested } from '@/src/redux/slices/pro'
+import {
+  deleteCompanyProfileRequested,
+  getCompanyProfileRequested,
+  saveCompanyProfileRequested,
+} from '@/src/redux/slices/pro'
 import SimpleTextField from '../../fields/SimpleTextField'
 import LogoUpload from '../../fields/LogoUpload'
 import SimpleFileUploader from '../../fields/SimpleFileUploader'
-import { getCompanyProfile } from '@/src/saga/proSaga/api'
+import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
 
 type Props = {}
 
 const CreateCategoryForm = (props: Props) => {
   const { t } = useTranslation(['common', 'forms'])
   const dispatch = useDispatch()
-  const theme = useTheme()
-  const { palette } = theme
+  const { palette } = useTheme()
   const router = useRouter()
   const {
     query: { companyProfileId },
   } = useRouter()
+  const imageLimit = useSelector(selectProImageLimit)
   const proProfile = useSelector(selectSingleProProfile)
-  const category = proProfile?.category
 
+  const [open, setOpen] = useState<boolean>(false)
   const initialValues: SaveProProfile = {
     companyProfileId: proProfile?.objectId || '',
     companyName: proProfile?.name || '',
     companyDescription: proProfile?.description || '',
     companyDescription2: proProfile?.description2 || '',
     contactPersonName: proProfile?.contactPerson || '',
-    companyLogo: proProfile?.logoUrl || '',
-    companyBanner: proProfile?.bannerUrl || '',
-    companyImages: [],
-    isPublic: proProfile?.public || true,
+    companyLogo: proProfile?.logoUrl ? proProfile?.logoUrl : undefined,
+    companyBanner: proProfile?.bannerUrl ? proProfile?.bannerUrl : undefined,
+    companyImages: proProfile?.imageUrls ? proProfile?.imageUrls : [],
+    isPublic: proProfile?.public || false,
   }
+
   const validationSchema = yup.object({})
 
   const onSubmit = (values: SaveProProfile) => {
@@ -76,19 +81,25 @@ const CreateCategoryForm = (props: Props) => {
   }
 
   useEffect(() => {
-    if (Array.isArray(companyProfileId)) {
-      dispatch(getCompanyProfile({ companyProfileId: companyProfileId[0] }))
-    } else if (companyProfileId) {
-      dispatch(getCompanyProfile({ companyProfileId }))
+    if (companyProfileId) {
+      dispatch(getCompanyProfileRequested({ companyProfileId }))
     }
   }, [companyProfileId, dispatch])
+
+  const handleDelete = () => {
+    if (typeof companyProfileId === 'string') {
+      console.log('Deleting profile with id:', companyProfileId)
+      dispatch(deleteCompanyProfileRequested({ profileId: companyProfileId }))
+      setOpen(false)
+    }
+  }
 
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
         <Grid container>
-          <Box sx={{ background: palette.customColors.lightBackground, color: palette.info.main }}>
-            {t('forms:category')}
+          <Box sx={{ background: palette.success.light, padding: 2, borderRadius: 2, mt: 2 }}>
+            <Typography color={palette.info.main}>{t(`categories:${proProfile?.category}`)}</Typography>
           </Box>
           <Grid item xs={12} mt={{ xs: 6, md: 10 }}>
             <SimpleTextField
@@ -112,23 +123,28 @@ const CreateCategoryForm = (props: Props) => {
             />
           </Grid>
 
-          <Grid>
+          <Grid item xs={12} mt={{ xs: 5, md: 11 }}>
             <LogoUpload
               label={t('forms:company_logo')}
               name={'companyLogo'}
-              image={formik.values.companyLogo as unknown as File}
-              handleChange={handleFieldChange}
+              image={formik.values.companyLogo}
+              handleChange={(field: string, value: any, shouldValidate?: boolean) =>
+                handleFieldChange(field, value, shouldValidate)
+              }
+              id="companyLogoUpload"
             />
           </Grid>
 
           <Grid item xs={12} mt={{ xs: 5, md: 11 }}>
-            <SimpleTextField
-              value={formik.values.companyBanner}
+            <LogoUpload
               label={t('forms:company_banner')}
-              handleChange={e => handleFieldChange('companyBanner', e.target.value)}
               name={'companyBanner'}
-              touched={formik.touched.companyBanner}
-              error={formik.errors.companyBanner}
+              image={formik.values.companyBanner}
+              handleChange={(field: string, value: any, shouldValidate?: boolean) =>
+                handleFieldChange(field, value, shouldValidate)
+              }
+              fullWidth
+              id="companyBannerUpload"
             />
           </Grid>
 
@@ -161,11 +177,11 @@ const CreateCategoryForm = (props: Props) => {
                 handleFieldChange(field, value, shouldValidate)
               }
             />
-            <Grid container justifyContent="flex-end" mt={4}>
+            {/* <Grid container justifyContent="flex-end" mt={4}>
               <Typography variant="body2" color={palette.customColors.inputHelper} fontWeight={500}>
-                {t('forms:image_max')}
+                {t('forms:image_max')}: {imageLimit}
               </Typography>
-            </Grid>
+            </Grid> */}
           </Grid>
 
           <Grid item xs={12} mt={{ xs: 5, md: 11 }}>
@@ -179,7 +195,7 @@ const CreateCategoryForm = (props: Props) => {
               multiline={true}
               maxRows={12}
               minRows={12}
-              inputProps={{ maxlength: 10000 }}
+              inputProps={{ maxLength: 10000 }}
             />
             <Grid container justifyContent="flex-end" mt={4}>
               <Typography variant="body2" color={palette.customColors.inputHelper} fontWeight={500}>
@@ -210,8 +226,17 @@ const CreateCategoryForm = (props: Props) => {
               {t('forms:save_ad')}
             </Button>
           </Grid>
+          <Button variant="text" sx={{ fontSize: 16, color: palette.error.main, mb: 2 }} onClick={() => setOpen(true)}>
+            {t('common:delete')}
+          </Button>
         </Grid>
       </form>
+      <ModalDeleteConfirm
+        open={open}
+        onClose={() => setOpen(false)}
+        onDelete={handleDelete}
+        profileId={companyProfileId?.toString()}
+      />
     </div>
   )
 }
