@@ -85,6 +85,7 @@ const CreateCategoryForm = (props: Props) => {
       dispatch(getCompanyProfileRequested({ companyProfileId }))
     }
   }, [companyProfileId, dispatch])
+  //TODO плавающий баг скорее всего с редаксом, не сразу выдает страницу с данными
 
   const handleDelete = () => {
     if (typeof companyProfileId === 'string') {

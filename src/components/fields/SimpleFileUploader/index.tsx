@@ -3,15 +3,15 @@ import { useEffect, useState } from 'react'
 import { setJWTBearerToken } from '@/src/lib/storage'
 import { useSelector } from 'react-redux'
 import { getCurrentUser } from '@/src/redux/selectors/auth'
-import Image from 'next/image'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { FormikErrors } from 'formik'
 import { CreateAdForm } from '@/src/types/redux/adCreate'
+import Image from 'next/image'
 
 type Props = {
   label: string
   name: string
-  images: File[] | string[]
+  images: (File | string)[]
   handleChange: (
     field: string,
     value: any,
@@ -33,6 +33,10 @@ const SimpleFileUploader = ({ label, images, handleChange, name }: Props) => {
       loadToken().then()
     }
   }, [])
+
+  const getImageSrc = (image: File | string): string => {
+    return typeof image === 'string' ? image : URL.createObjectURL(image)
+  }
 
   if (!token) return null
   return (
@@ -82,7 +86,7 @@ const SimpleFileUploader = ({ label, images, handleChange, name }: Props) => {
                 )}
                 {images[i] && (
                   <Image
-                    src={typeof images[i] === 'string' ? images[i] : URL.createObjectURL(images[i])}
+                    src={getImageSrc(images[i])}
                     alt={`image-file-${i}`}
                     width={115}
                     height={115}

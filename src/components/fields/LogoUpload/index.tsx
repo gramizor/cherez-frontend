@@ -80,10 +80,10 @@ const LogoUpload = ({ label, image, handleChange, name, fullWidth, id }: Props) 
               )}
               {image && (
                 <Image
-                  src={typeof image === 'string' ? image : image instanceof File ? URL.createObjectURL(image) : ''}
+                  src={typeof image === 'string' ? image : URL.createObjectURL(image as File)}
                   alt="image-file"
                   layout="fill"
-                  objectFit="cover"
+                  sizes="(max-width: 115px) 100vw, 115px"
                   style={{ objectFit: 'cover' }}
                 />
               )}
