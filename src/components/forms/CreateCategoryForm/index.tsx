@@ -11,6 +11,7 @@ import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
 import {
   deleteCompanyProfileRequested,
   getCompanyProfileRequested,
+  resetProProfiles,
   saveCompanyProfileRequested,
 } from '@/src/redux/slices/pro'
 import SimpleTextField from '../../fields/SimpleTextField'
@@ -32,17 +33,17 @@ const CreateCategoryForm = (props: Props) => {
   const proProfile = useSelector(selectSingleProProfile)
 
   const [open, setOpen] = useState<boolean>(false)
-  const initialValues: SaveProProfile = {
-    companyProfileId: proProfile?.objectId || '',
-    companyName: proProfile?.name || '',
-    companyDescription: proProfile?.description || '',
-    companyDescription2: proProfile?.description2 || '',
-    contactPersonName: proProfile?.contactPerson || '',
-    companyLogo: proProfile?.logoUrl ? proProfile?.logoUrl : undefined,
-    companyBanner: proProfile?.bannerUrl ? proProfile?.bannerUrl : undefined,
-    companyImages: proProfile?.imageUrls ? proProfile?.imageUrls : [],
-    isPublic: proProfile?.public || false,
-  }
+  const [initialValues, setInitialValues] = useState<SaveProProfile>({
+    companyProfileId: '',
+    companyName: '',
+    companyDescription: '',
+    companyDescription2: '',
+    contactPersonName: '',
+    companyLogo: undefined,
+    companyBanner: undefined,
+    companyImages: [],
+    isPublic: false,
+  })
 
   const validationSchema = yup.object({})
 
@@ -69,6 +70,7 @@ const CreateCategoryForm = (props: Props) => {
   const formik = useFormik({
     validationSchema,
     initialValues,
+    enableReinitialize: true,
     onSubmit,
   })
 
@@ -82,10 +84,26 @@ const CreateCategoryForm = (props: Props) => {
 
   useEffect(() => {
     if (companyProfileId) {
+      dispatch(resetProProfiles())
       dispatch(getCompanyProfileRequested({ companyProfileId }))
     }
   }, [companyProfileId, dispatch])
-  //TODO плавающий баг скорее всего с редаксом, не сразу выдает страницу с данными
+
+  useEffect(() => {
+    if (proProfile) {
+      setInitialValues({
+        companyProfileId: proProfile.objectId || '',
+        companyName: proProfile.name || '',
+        companyDescription: proProfile.description || '',
+        companyDescription2: proProfile.description2 || '',
+        contactPersonName: proProfile.contactPerson || '',
+        companyLogo: proProfile.logoUrl ? proProfile.logoUrl : undefined,
+        companyBanner: proProfile.bannerUrl ? proProfile.bannerUrl : undefined,
+        companyImages: proProfile.imageUrls ? proProfile.imageUrls : [],
+        isPublic: proProfile.public || false,
+      })
+    }
+  }, [proProfile])
 
   const handleDelete = () => {
     if (typeof companyProfileId === 'string') {

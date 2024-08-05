@@ -142,6 +142,10 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
+    resetProProfiles: state => {
+      state.proProfiles = []
+      state.singleProProfile = initialState.singleProProfile
+    },
     getCompanyProfileRequested: (state, action) => {
       state.loading = true
       state.error = null
@@ -183,6 +187,7 @@ export const {
   getCompanyProfileFailed,
   getCompanyProfileRequested,
   getCompanyProfileSucceed,
+  resetProProfiles,
 } = slice.actions
 
 export default slice.reducer
