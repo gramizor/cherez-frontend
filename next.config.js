@@ -6,7 +6,7 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   images: {
-    domains: [process.env.S3_DOMAIN, process.env.IMG_DOMAIN, process.env.IMG_DOMAIN_IDN],
+    domains: [process.env.S3_DOMAIN],
   },
   eslint: {
     ignoreDuringBuilds: true,
