@@ -11,6 +11,7 @@ import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
 import {
   deleteCompanyProfileRequested,
   getCompanyProfileRequested,
+  getMyCompanyProfileImagesLimitRequested,
   resetProProfiles,
   saveCompanyProfileRequested,
 } from '@/src/redux/slices/pro'
@@ -86,6 +87,7 @@ const CreateCategoryForm = (props: Props) => {
     if (companyProfileId) {
       dispatch(resetProProfiles())
       dispatch(getCompanyProfileRequested({ companyProfileId }))
+      dispatch(getMyCompanyProfileImagesLimitRequested())
     }
   }, [companyProfileId, dispatch])
 
@@ -117,9 +119,25 @@ const CreateCategoryForm = (props: Props) => {
     <div>
       <form onSubmit={formik.handleSubmit}>
         <Grid container>
-          <Box sx={{ background: palette.success.light, padding: 2, borderRadius: 2, mt: 2 }}>
-            <Typography color={palette.info.main}>{t(`categories:${proProfile?.category}`)}</Typography>
-          </Box>
+          <Grid item xs={12} mt={{ xs: 6, md: 10 }}>
+            <Typography sx={{ mb: 1.5 }} variant="subtitle1">
+              {t('promotion:categoryAd')}
+            </Typography>
+            <Box
+              sx={{
+                display: 'inline-block',
+                background: palette.primary.light,
+                padding: '6px 16px',
+                borderRadius: 2,
+                mt: 2,
+              }}
+            >
+              <Typography color={palette.info.main} variant="h5">
+                {t(`categories:${proProfile?.category}`)}
+              </Typography>
+            </Box>
+          </Grid>
+
           <Grid item xs={12} mt={{ xs: 6, md: 10 }}>
             <SimpleTextField
               value={formik.values.companyName}
@@ -196,11 +214,12 @@ const CreateCategoryForm = (props: Props) => {
                 handleFieldChange(field, value, shouldValidate)
               }
             />
-            {/* <Grid container justifyContent="flex-end" mt={4}>
+            <Grid container justifyContent="flex-end" mt={4}>
               <Typography variant="body2" color={palette.customColors.inputHelper} fontWeight={500}>
                 {t('forms:image_max')}: {imageLimit}
               </Typography>
-            </Grid> */}
+            </Grid>
+            TODO сделать вывод лимита
           </Grid>
 
           <Grid item xs={12} mt={{ xs: 5, md: 11 }}>
