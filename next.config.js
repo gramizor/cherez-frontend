@@ -6,7 +6,7 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   images: {
-    domains: [process.env.S3_DOMAIN],
+    domains: [process.env.S3_DOMAIN, 'через.рус'],
   },
   eslint: {
     ignoreDuringBuilds: true,
