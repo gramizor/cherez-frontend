@@ -82,7 +82,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ selectedCurrencyIds, onCu
                 >
                   <Box display="flex" alignItems="center">
                     <Image
-                      src={currency.iconUrl}
+                      src={encodeURI(currency.iconUrl)}
                       alt={currency.name}
                       width={50}
                       height={50}

@@ -49,7 +49,12 @@ const PromotionPageWrapper: React.FC<PromotionPageWrapperProps> = ({ content }) 
             <Typography variant="h3" sx={{ mr: 2 }}>
               {t('promotion')}
             </Typography>
-            <Box alignItems="center" sx={{ padding: '5px 16px', border: '1px solid #D9D9D9', borderRadius: '10px' }}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ padding: '5px 16px', border: '1px solid #D9D9D9', borderRadius: '10px' }}
+            >
               <Image src={cherezPlus} alt={cherezPlus} width={130} />
             </Box>
           </Box>

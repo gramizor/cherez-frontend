@@ -25,7 +25,7 @@ const PromotionMain: React.FC = () => {
     <>
       {/* Raise Ad Section */}
       <Box mb={4}>
-        <Box display="flex" alignItems="center" mb={2}>
+        <Box display="flex" alignItems="center" mb={6}>
           <Typography variant="h3" sx={{ mr: 2 }}>
             {t('promotion:raiseAd')}
           </Typography>
@@ -60,7 +60,7 @@ const PromotionMain: React.FC = () => {
 
       {/* XL Ad Section */}
       <Box mb={4}>
-        <Box display="flex" alignItems="center" mb={2}>
+        <Box display="flex" alignItems="center" mb={6}>
           <Typography variant="h3" sx={{ mr: 2 }}>
             {t('adXL')}
           </Typography>
