@@ -1,4 +1,5 @@
 import { myAdsState } from '@/src/types/redux/myAds'
+import { addOneMonthToDate } from '@/src/utils/dateHelper'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const initialState: myAdsState = {
@@ -85,9 +86,13 @@ const slice = createSlice({
       state.loading = true
     },
     setAdPublicSucceed: (state, action: PayloadAction<{ adId: string; isPublic: boolean }>) => {
-      const adIndex = state.myAds.findIndex(ad => ad.objectId === action.payload.adId)
-      if (adIndex !== -1) {
-        state.myAds[adIndex].public = action.payload.isPublic
+      const commonAdIndex = state.myAds.findIndex(ad => ad.objectId === action.payload.adId)
+      if (commonAdIndex !== -1) {
+        state.myAds[commonAdIndex].public = action.payload.isPublic
+      }
+      const proAdIndex = state.myProAds.findIndex(ad => ad.objectId === action.payload.adId)
+      if (proAdIndex !== -1) {
+        state.myProAds[proAdIndex].public = action.payload.isPublic
       }
       state.error = null
       state.loading = false
@@ -122,10 +127,18 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    extendAdRequested: (state, action: PayloadAction<string>) => {
+    extendAdRequested: (state, action: PayloadAction<{ adId: string }>) => {
       state.loading = true
     },
-    extendAdSucceed: state => {
+    extendAdSucceed: (state, action: PayloadAction<{ adId: string }>) => {
+      const commonAdIndex = state.myAds.findIndex(ad => ad.objectId === action.payload.adId)
+      if (commonAdIndex !== -1 && state.myAds[commonAdIndex].publishedBefore) {
+        state.myAds[commonAdIndex].publishedBefore.iso = addOneMonthToDate(new Date()).toISOString()
+      }
+      const proAdIndex = state.myProAds.findIndex(ad => ad.objectId === action.payload.adId)
+      if (proAdIndex !== -1) {
+        state.myProAds[proAdIndex].publishedBefore.iso = addOneMonthToDate(new Date()).toISOString()
+      }
       state.error = null
       state.loading = false
     },

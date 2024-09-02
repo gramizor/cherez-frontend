@@ -92,7 +92,7 @@ function* updateProAdsPublicStatus(action: PayloadAction<isPublicPayload>) {
 function* extendAdById(action: PayloadAction<string>) {
   try {
     yield call(extendAd, { adId: action.payload })
-    yield put(extendAdSucceed())
+    yield put(extendAdSucceed({ adId: action.payload }))
   } catch (error: any) {
     yield put(extendAdFailed(error.response.data))
   }

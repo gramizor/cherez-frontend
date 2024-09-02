@@ -1,5 +1,4 @@
-// MyAdsCardComponent.tsx
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Typography, Stack, Button } from '@mui/material'
 import Image from 'next/image'
 import { myProAd } from '@/src/types/redux/myAds'
@@ -11,7 +10,6 @@ import dateFormatter, { calculateDaysUntil } from '@/src/utils/dateHelper'
 import { palette } from '@/src/theme/palette'
 import RadioSliderButton from '../../buttons/RadioSliderButton/RadioSliderButton'
 import { useDispatch } from 'react-redux'
-import { setAdPublicRequested } from '@/src/redux/slices/myAds'
 
 interface MyAdsCardComponentProps {
   ad: myProAd
@@ -76,7 +74,7 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
             )
           )}
           <Typography my={2}>
-            {ad?.publishedAt?.iso ? dateFormatter(ad?.publishedAt?.iso) : t('common:not_published')}
+            {ad?.publishedAt?.iso ? dateFormatter(ad?.publishedAt?.iso) : t('common:draft')}
           </Typography>
         </Stack>
       </Stack>
@@ -123,7 +121,13 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
                 {ad.country} {ad.city}
               </Typography>
             </Stack>
-            <PromotionGroupBtns ad={ad} />
+            <PromotionGroupBtns
+              ad={ad}
+              handleDeleteAd={handleDeleteAd}
+              handleXL={handleXL}
+              handleBoost={handleBoost}
+              handleSettings={handleSettings}
+            />
           </Stack>
         </Stack>
       </Stack>

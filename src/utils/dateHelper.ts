@@ -35,14 +35,19 @@ export const getMonthDifference = (startedAt: Date, endsAt: Date): number => {
 }
 
 export const getDaysUntilNextMonth = (endsDate: Date): number => {
-  const nextMonthDate = new Date(endsDate)
-  nextMonthDate.setMonth(nextMonthDate.getMonth() + 1)
+  const nextMonthDate = addOneMonthToDate(endsDate)
 
   const currentDate = new Date()
   const timeDifference = nextMonthDate.getTime() - currentDate.getTime()
   const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24))
 
   return daysDifference
+}
+
+export const addOneMonthToDate = (date: Date): Date => {
+  const result = new Date(date)
+  result.setMonth(result.getMonth() + 1)
+  return result
 }
 
 export default dateFormatter

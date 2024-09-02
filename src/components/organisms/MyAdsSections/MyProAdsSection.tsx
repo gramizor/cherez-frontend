@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Button, Stack, Typography, CircularProgress } from '@mui/material' // Добавь CircularProgress
+import React, { useEffect, useState } from 'react'
+import { Box, Button, Stack, Typography } from '@mui/material'
 import { RootState } from '@/src/redux/rootReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -10,7 +10,6 @@ import {
   getMyProAdsRequested,
   setAdPublicRequested,
   setProAdsPublicRequested,
-  setSkip,
 } from '@/src/redux/slices/myAds'
 import { useTranslation } from 'next-i18next'
 import MyAdsCardComponent from '../../molecules/MyAdsCardComponent/MyAdsCardComponent'
@@ -19,16 +18,13 @@ import CategoryProCard from '../../molecules/CategoryProCard/CategoryProCard'
 import { selectProProfiles } from '@/src/redux/selectors/pro'
 import { DeleteCompanyProfile, ProProfile } from '@/src/types/redux/pro'
 import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
-import {
-  deleteCompanyProfileRequested,
-  getCompanyProfileAdsCountRequested,
-  getMyCompanyProfilesRequested,
-} from '@/src/redux/slices/pro'
+import { deleteCompanyProfileRequested, getMyCompanyProfilesRequested } from '@/src/redux/slices/pro'
 import { getLoadingMyAds, getSkipMyAds } from '@/src/redux/selectors/myAds'
 import RadioSliderButton from '../../buttons/RadioSliderButton/RadioSliderButton'
 import { palette } from '@/src/theme/palette'
 import { enableAdBoostRequested, setAdLargeRequested } from '@/src/redux/slices/promotion'
 import { adBoostState } from '@/src/types/redux/promotion'
+import LoadingCircular from '../../atoms/LoadingCircular/LoadingCircular.styled'
 
 const MyProAdsSection = () => {
   const dispatch = useDispatch()
@@ -71,8 +67,7 @@ const MyProAdsSection = () => {
   }
 
   const handleExtend = (adId: string) => {
-    dispatch(extendAdRequested(adId))
-    dispatch(getMyProAdsRequested({ skip, limit: 5 }))
+    dispatch(extendAdRequested({ adId }))
   }
 
   const handleDeleteAd = (adId: string) => {
@@ -92,66 +87,59 @@ const MyProAdsSection = () => {
   }
 
   return (
-    <Box>
-      {isLoading ? (
-        <Box sx={{ display: 'flex', marginTop: '50px', flex: 1, justifyContent: 'center' }}>
-          <CircularProgress />
-        </Box>
-      ) : (
+    <Box position="relative">
+      <LoadingCircular isLoading={isLoading} />
+      <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}` }}>
+        <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
+          {t('myProAdsActive')}: {total}
+          <RadioSliderButton checked={isActive} onChange={setActiveSlider} />
+        </Typography>
+      </Stack>
+      <Box display="flex" flexDirection="column" gap={2} mt={7}>
+        {Array.isArray(adsPro) &&
+          adsPro.map((proCategory: ProProfile) => (
+            <CategoryProCard
+              key={proCategory.objectId}
+              ad={proCategory}
+              onDeleteClick={(profileId: string) => {
+                setSelectedId({ profileId })
+                setOpen(true)
+              }}
+            />
+          ))}
+      </Box>
+      {Array.isArray(myProAds) && myProAds.length > 0 ? (
         <>
-          <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}` }}>
-            <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
-              {t('myProAdsActive')}: {total}
-              <RadioSliderButton checked={isActive} onChange={setActiveSlider} />
-            </Typography>
-          </Stack>
-          <Box display="flex" flexDirection="column" gap={2} mt={7}>
-            {Array.isArray(adsPro) &&
-              adsPro.map((proCategory: ProProfile) => (
-                <CategoryProCard
-                  key={proCategory.objectId}
-                  ad={proCategory}
-                  onDeleteClick={(profileId: string) => {
-                    setSelectedId({ profileId })
-                    setOpen(true)
-                  }}
-                />
-              ))}
-          </Box>
-          {Array.isArray(myProAds) && myProAds.length > 0 ? (
-            <>
-              {myProAds.map((ad: myProAd) => (
-                <MyAdsCardComponent
-                  key={ad.objectId}
-                  ad={ad}
-                  isActive={isActive}
-                  togglePublicStatus={(isPublic: boolean) => togglePublicStatus(ad.objectId, isPublic)}
-                  handleExtend={() => handleExtend(ad.objectId)}
-                  handleDeleteAd={() => handleDeleteAd(ad.objectId)}
-                  handleXL={() => handleXL({ adId: ad.objectId })}
-                  handleBoost={() => handleBoost({ adId: ad.objectId })}
-                  handleSettings={function (): void {
-                    throw new Error('Function not implemented.')
-                  }}
-                />
-              ))}
-              {myProAds.length < total && (
-                <Button variant="outlined" color="secondary" onClick={handleShowMore} sx={{ my: 4 }}>
-                  {t('load_more')}
-                </Button>
-              )}
-            </>
-          ) : (
-            <Typography variant="body1">{t('no_pro_ads')}</Typography>
+          {myProAds.map((ad: myProAd) => (
+            <MyAdsCardComponent
+              key={ad.objectId}
+              ad={ad}
+              isActive={isActive}
+              togglePublicStatus={(newStatus: boolean) => togglePublicStatus(ad.objectId, newStatus)}
+              handleExtend={() => handleExtend(ad.objectId)}
+              handleDeleteAd={() => handleDeleteAd(ad.objectId)}
+              handleXL={() => handleXL({ adId: ad.objectId })}
+              handleBoost={() => handleBoost({ adId: ad.objectId })}
+              handleSettings={function (): void {
+                throw new Error('Function not implemented.')
+              }}
+            />
+          ))}
+          {myProAds.length < total && (
+            <Button variant="outlined" color="secondary" onClick={handleShowMore} sx={{ my: 4 }}>
+              {t('load_more')}
+            </Button>
           )}
-          <ModalDeleteConfirm
-            open={open}
-            onClose={() => setOpen(false)}
-            onDelete={handleDelete}
-            profileId={selectedId?.profileId}
-          />
         </>
+      ) : (
+        <Typography variant="body1">{t('no_pro_ads')}</Typography>
       )}
+      <ModalDeleteConfirm
+        open={open}
+        onClose={() => setOpen(false)}
+        onDelete={handleDelete}
+        profileId={selectedId?.profileId}
+      />
     </Box>
   )
 }

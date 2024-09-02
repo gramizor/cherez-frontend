@@ -184,6 +184,7 @@ export type AdsState = {
   images: string[]
   largeBefore?: AdsDateType
   publishedAt: AdsDateType
+  publishedBefore?: AdsDateType
   owner: {
     objectId: string
   }
