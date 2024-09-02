@@ -30,7 +30,7 @@ const setProAdsPublic = (payload: isPublicPayload) => {
   return axiosClient.post(path, { isPublic })
 }
 
-const extendAd = (payload: adIdPayload) => {
+const extendAd = (payload: { adId: string }) => {
   const { adId } = payload
   const path = 'functions/extendAd'
   return axiosClient.post(path, { adId })
@@ -42,4 +42,24 @@ const deleteAd = (payload: adIdPayload) => {
   return axiosClient.post(path, { adId })
 }
 
-export { getMyCommonAds, getMyProAds, setAdPublic, setCommonAdsPublic, setProAdsPublic, extendAd, deleteAd }
+const getMyProAdsCount = () => {
+  const path = 'functions/getMyProAdsCount'
+  return axiosClient.post(path)
+}
+
+const getIsMyProAdsActive = () => {
+  const path = 'functions/isMyProAdsActive'
+  return axiosClient.post(path)
+}
+
+export {
+  getMyProAdsCount,
+  getIsMyProAdsActive,
+  getMyCommonAds,
+  getMyProAds,
+  setAdPublic,
+  setCommonAdsPublic,
+  setProAdsPublic,
+  extendAd,
+  deleteAd,
+}

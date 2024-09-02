@@ -25,6 +25,12 @@ export interface myAdsState {
   myAds: AdsState[]
   myProProfiles: CompanyState[]
   myProAds: myProAd[]
+  params: {
+    skip: number
+    limit: number
+  }
+  isActive: boolean
+  proAdsCount: number
 }
 
 export interface myProAd {

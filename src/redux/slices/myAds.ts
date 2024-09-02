@@ -1,4 +1,4 @@
-import { GetMyProAdsPayload, myAdsState } from '@/src/types/redux/myAds'
+import { myAdsState } from '@/src/types/redux/myAds'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const initialState: myAdsState = {
@@ -7,17 +7,59 @@ const initialState: myAdsState = {
   myAds: [],
   myProProfiles: [],
   myProAds: [],
+  params: {
+    skip: 0,
+    limit: 10,
+  },
+  proAdsCount: 0,
+  isActive: false,
 }
 
 const slice = createSlice({
   name: 'myAds',
   initialState,
   reducers: {
-    getMyProAdsRequested: (state, action: PayloadAction<GetMyProAdsPayload>) => {
+    getMyProAdsCountRequested: state => {
+      state.loading = true
+      state.error = null
+    },
+
+    getMyProAdsCountSucceed: (state, action) => {
+      state.loading = false
+      state.proAdsCount = action.payload.result
+      state.error = null
+    },
+
+    getMyProAdsCountFailed: (state, action) => {
+      state.loading = false
+      state.error = action.payload.error
+    },
+
+    getIsMyProAdsActiveRequested: state => {
+      state.loading = true
+    },
+
+    getIsMyProAdsActiveSucceed: (state, action) => {
+      state.loading = false
+      state.isActive = action.payload.result
+      state.error = null
+    },
+
+    getIsMyProAdsActiveFailed: (state, action) => {
+      state.loading = false
+      state.error = action.payload.error
+    },
+
+    setSkip: (state, { payload }) => {
+      state.loading = false
+      state.params.skip = payload.skip
+    },
+
+    getMyProAdsRequested: (state, action) => {
       state.loading = true
     },
     getMyProAdsSucceed: (state, action) => {
-      state.myProAds = action.payload.result
+      state.myProAds = state.myProAds.length > 0 ? [...state.myProAds, ...action.payload.result] : action.payload.result
       state.error = null
       state.loading = false
     },
@@ -39,14 +81,18 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    setAdPublicRequested: state => {
+    setAdPublicRequested: (state, action: PayloadAction<{ adId: string; isPublic: boolean }>) => {
       state.loading = true
     },
-    setAdPublicSucceed: (state, action) => {
+    setAdPublicSucceed: (state, action: PayloadAction<{ adId: string; isPublic: boolean }>) => {
+      const adIndex = state.myAds.findIndex(ad => ad.objectId === action.payload.adId)
+      if (adIndex !== -1) {
+        state.myAds[adIndex].public = action.payload.isPublic
+      }
       state.error = null
       state.loading = false
     },
-    setAdPublicFailed: (state, action) => {
+    setAdPublicFailed: (state, action: PayloadAction<{ error: string }>) => {
       state.loading = false
       state.error = action.payload.error
     },
@@ -62,11 +108,12 @@ const slice = createSlice({
       state.loading = false
       state.error = action.payload.error
     },
-
-    setProAdsPublicRequested: state => {
+    setProAdsPublicRequested: (state, action) => {
       state.loading = true
     },
-    setProAdsPublicSucceed: state => {
+    setProAdsPublicSucceed: (state, action) => {
+      state.isActive = action.payload.isPublic
+      state.myProAds = state.myProAds.map(ad => (ad.draft === false ? { ...ad, public: action.payload.isPublic } : ad))
       state.error = null
       state.loading = false
     },
@@ -75,7 +122,7 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    extendAdRequested: state => {
+    extendAdRequested: (state, action: PayloadAction<string>) => {
       state.loading = true
     },
     extendAdSucceed: state => {
@@ -87,7 +134,7 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    deleteAdRequested: state => {
+    deleteAdRequested: (state, action) => {
       state.loading = true
     },
     deleteAdSucceed: state => {
@@ -102,6 +149,7 @@ const slice = createSlice({
 })
 
 export const {
+  setSkip,
   getMyProAdsRequested,
   getMyProAdsSucceed,
   getMyProAdsFailed,
@@ -123,6 +171,12 @@ export const {
   deleteAdRequested,
   deleteAdSucceed,
   deleteAdFailed,
+  getMyProAdsCountRequested,
+  getMyProAdsCountSucceed,
+  getMyProAdsCountFailed,
+  getIsMyProAdsActiveRequested,
+  getIsMyProAdsActiveSucceed,
+  getIsMyProAdsActiveFailed,
 } = slice.actions
 
 export default slice.reducer

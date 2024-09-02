@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 type Props = {
   open: boolean
   onClose: () => void
-  onDelete: () => void
+  onDelete?: () => void
   profileId: string | undefined
 }
 

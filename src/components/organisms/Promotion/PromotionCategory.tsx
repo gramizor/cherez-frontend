@@ -40,6 +40,7 @@ import useRequestStatus from '@/src/utils/useRequestStatus'
 import { useRouter } from 'next/router'
 import { object } from 'yup'
 import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
+import CategoryProCard from '../../molecules/CategoryProCard/CategoryProCard'
 
 const categories = [
   CategoriesType.Services,
@@ -207,50 +208,14 @@ const PromotionCategory: React.FC = () => {
           <Box display="flex" flexDirection="column" gap={2} mt={2}>
             {Array.isArray(adsPro) &&
               adsPro.map((ad: ProProfile) => (
-                <Card
+                <CategoryProCard
                   key={ad.objectId}
-                  sx={{
-                    display: 'flex',
-                    backgroundColor:
-                      new Date(ad.endsAt.iso) > new Date()
-                        ? `${palette.primary.light}50`
-                        : `${palette.customColors.redLight}70`,
-                    borderRadius: '10px',
-                    marginBottom: '20px',
-                    minHeight: '100px',
-                    position: 'relative',
-                    cursor: 'pointer',
+                  ad={ad}
+                  onDeleteClick={(profileId: string) => {
+                    setSelectedId({ profileId })
+                    setOpen(true)
                   }}
-                >
-                  <IconButton
-                    sx={{ position: 'absolute', top: 10, right: 10, width: '37px', height: '37px' }}
-                    onClick={() => {
-                      const profileId = ad.objectId
-                      setSelectedId({ profileId })
-                      setOpen(true)
-                    }}
-                  >
-                    <Image src={deleteIcon} alt="delete" />
-                  </IconButton>
-                  <CardContent
-                    sx={{
-                      flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}
-                    onClick={() => router.push(`/pro/create/${ad.objectId}`)}
-                  >
-                    <Typography color={palette.text.primary} fontSize="18px" fontWeight={600} mb={1}>
-                      {`${t('promotion_service')} - ${t('common:pro_category')} "${t(`categories:${ad.category}`)}"`}
-                    </Typography>
-                    <Typography color={palette.text.primary} fontSize="16px" fontWeight={500} alignItems="flex-end">
-                      {t('common:date.connected_before')} {new Date(ad.startedAt.iso).toLocaleString()}{' '}
-                      {t('common:date.connected_after')} {new Date(ad.endsAt.iso).toLocaleString()}
-                    </Typography>
-                  </CardContent>
-                  <Box display="flex" flexDirection="column" justifyContent="space-between" alignItems="center"></Box>
-                </Card>
+                />
               ))}
           </Box>
         )}

@@ -1,80 +1,156 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
-import { Box, Typography, Icon, Switch } from '@mui/material'
-import Image from 'next/image'
-import { myProAd } from '@/src/types/redux/myAds'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Box, Button, Stack, Typography, CircularProgress } from '@mui/material' // Добавь CircularProgress
 import { RootState } from '@/src/redux/rootReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMyProAdsRequested } from '@/src/redux/slices/myAds'
+import {
+  deleteAdRequested,
+  extendAdRequested,
+  getIsMyProAdsActiveRequested,
+  getMyProAdsCountRequested,
+  getMyProAdsRequested,
+  setAdPublicRequested,
+  setProAdsPublicRequested,
+  setSkip,
+} from '@/src/redux/slices/myAds'
 import { useTranslation } from 'next-i18next'
-import getSingleImage from '@/src/utils/helper'
-import noPhoto from '/src/assets/images/common/no_photo.jpg'
+import MyAdsCardComponent from '../../molecules/MyAdsCardComponent/MyAdsCardComponent'
+import { myProAd } from '@/src/types/redux/myAds'
+import CategoryProCard from '../../molecules/CategoryProCard/CategoryProCard'
+import { selectProProfiles } from '@/src/redux/selectors/pro'
+import { DeleteCompanyProfile, ProProfile } from '@/src/types/redux/pro'
+import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
+import {
+  deleteCompanyProfileRequested,
+  getCompanyProfileAdsCountRequested,
+  getMyCompanyProfilesRequested,
+} from '@/src/redux/slices/pro'
+import { getLoadingMyAds, getSkipMyAds } from '@/src/redux/selectors/myAds'
+import RadioSliderButton from '../../buttons/RadioSliderButton/RadioSliderButton'
+import { palette } from '@/src/theme/palette'
+import { enableAdBoostRequested, setAdLargeRequested } from '@/src/redux/slices/promotion'
+import { adBoostState } from '@/src/types/redux/promotion'
 
 const MyProAdsSection = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation('promotion')
-
   const myProAds = useSelector((state: RootState) => state.myAds.myProAds)
+  const adsPro = useSelector(selectProProfiles)
+  const total = useSelector((state: RootState) => state.myAds.proAdsCount)
+  const skip = useSelector(getSkipMyAds)
+  const isLoading = useSelector(getLoadingMyAds)
+
+  const [open, setOpen] = useState<boolean>(false)
+  const [selectedId, setSelectedId] = useState<DeleteCompanyProfile | null>(null)
+  const [isActive, setIsActive] = useState(useSelector((state: RootState) => !!state.myAds.isActive))
 
   useEffect(() => {
-    if (!myProAds || myProAds.length === 0) {
-      dispatch(getMyProAdsRequested({ skip: 0, limit: 10 }))
+    if (!isLoading) {
+      dispatch(getMyCompanyProfilesRequested())
+      dispatch(getMyProAdsCountRequested())
+      dispatch(getMyProAdsRequested({ skip, limit: 5 }))
+      dispatch(getIsMyProAdsActiveRequested())
     }
-  }, [dispatch, myProAds])
+  }, [])
+
+  const handleDelete = () => {
+    if (selectedId) {
+      dispatch(deleteCompanyProfileRequested(selectedId))
+      setOpen(false)
+      dispatch(getMyCompanyProfilesRequested())
+    }
+  }
+
+  const setActiveSlider = () => {
+    const newIsActive = !isActive
+    setIsActive(newIsActive)
+    dispatch(setProAdsPublicRequested({ isPublic: newIsActive }))
+  }
+
+  const handleShowMore = () => {
+    dispatch({ type: 'myAds/handleShowMore', payload: { skip, limit: 5 } })
+  }
+
+  const handleExtend = (adId: string) => {
+    dispatch(extendAdRequested(adId))
+    dispatch(getMyProAdsRequested({ skip, limit: 5 }))
+  }
+
+  const handleDeleteAd = (adId: string) => {
+    dispatch(deleteAdRequested(adId))
+  }
+
+  const handleXL = (adId: adBoostState): void => {
+    dispatch(setAdLargeRequested(adId))
+  }
+
+  const handleBoost = (adId: adBoostState): void => {
+    dispatch(enableAdBoostRequested(adId))
+  }
+
+  const togglePublicStatus = (adId: string, isPublic: boolean) => {
+    dispatch(setAdPublicRequested({ adId, isPublic }))
+  }
 
   return (
     <Box>
-      {Array.isArray(myProAds) && myProAds.length > 0 ? (
-        myProAds.map((ad: myProAd) => {
-          const imagePro = getSingleImage(ad.images) || noPhoto
-          return (
-            <Box key={ad.objectId} sx={{ display: 'flex', mb: 2, p: 2, border: '1px solid #ddd', borderRadius: '8px' }}>
-              <Box width={120} height={120} position="relative">
-                <Image src={imagePro} alt={ad.label} layout="fill" objectFit="contain" />
-              </Box>
-              <Box ml={2} flex="1">
-                <Typography variant="body1" fontWeight="bold">
-                  {ad.label}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {ad.description}
-                </Typography>
-                <Box display="flex" alignItems="center" mt={1}>
-                  <Typography variant="h6" fontWeight="bold" mr={1}>
-                    {ad.price} {ad.currencyCode}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {ad.city}, {ad.country}
-                  </Typography>
-                </Box>
-                <Box display="flex" alignItems="center" mt={1}>
-                  <Typography variant="body2" color="text.secondary" mr={1}>
-                    {t('left_days', { days: 21 })}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" mr={1}>
-                    {t('views', { count: 100 })}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {new Date(ad.updatedAt).toLocaleDateString()}
-                  </Typography>
-                </Box>
-                <Box display="flex" alignItems="center" mt={1}>
-                  <Box mr={2}>
-                    <Icon>plane</Icon>
-                  </Box>
-                  <Box mr={2}>
-                    <Icon>home</Icon>
-                  </Box>
-                  <Box mr={2}>
-                    <Icon>car</Icon>
-                  </Box>
-                  <Switch checked={ad.public} />
-                </Box>
-              </Box>
-            </Box>
-          )
-        })
+      {isLoading ? (
+        <Box sx={{ display: 'flex', marginTop: '50px', flex: 1, justifyContent: 'center' }}>
+          <CircularProgress />
+        </Box>
       ) : (
-        <Typography variant="body1">{t('no_pro_ads')}</Typography>
+        <>
+          <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}` }}>
+            <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
+              {t('myProAdsActive')}: {total}
+              <RadioSliderButton checked={isActive} onChange={setActiveSlider} />
+            </Typography>
+          </Stack>
+          <Box display="flex" flexDirection="column" gap={2} mt={7}>
+            {Array.isArray(adsPro) &&
+              adsPro.map((proCategory: ProProfile) => (
+                <CategoryProCard
+                  key={proCategory.objectId}
+                  ad={proCategory}
+                  onDeleteClick={(profileId: string) => {
+                    setSelectedId({ profileId })
+                    setOpen(true)
+                  }}
+                />
+              ))}
+          </Box>
+          {Array.isArray(myProAds) && myProAds.length > 0 ? (
+            <>
+              {myProAds.map((ad: myProAd) => (
+                <MyAdsCardComponent
+                  key={ad.objectId}
+                  ad={ad}
+                  isActive={isActive}
+                  togglePublicStatus={(isPublic: boolean) => togglePublicStatus(ad.objectId, isPublic)}
+                  handleExtend={() => handleExtend(ad.objectId)}
+                  handleDeleteAd={() => handleDeleteAd(ad.objectId)}
+                  handleXL={() => handleXL({ adId: ad.objectId })}
+                  handleBoost={() => handleBoost({ adId: ad.objectId })}
+                  handleSettings={function (): void {
+                    throw new Error('Function not implemented.')
+                  }}
+                />
+              ))}
+              {myProAds.length < total && (
+                <Button variant="outlined" color="secondary" onClick={handleShowMore} sx={{ my: 4 }}>
+                  {t('load_more')}
+                </Button>
+              )}
+            </>
+          ) : (
+            <Typography variant="body1">{t('no_pro_ads')}</Typography>
+          )}
+          <ModalDeleteConfirm
+            open={open}
+            onClose={() => setOpen(false)}
+            onDelete={handleDelete}
+            profileId={selectedId?.profileId}
+          />
+        </>
       )}
     </Box>
   )

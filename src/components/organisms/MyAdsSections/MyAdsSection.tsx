@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/src/redux/rootReducer'
 import { useTranslation } from 'next-i18next'
-import { getMyCommonAdsRequested } from '@/src/redux/slices/myAds'
+import { getMyCommonAdsRequested, getMyProAdsRequested } from '@/src/redux/slices/myAds'
 
 const MyAdsSection = () => {
   const dispatch = useDispatch()

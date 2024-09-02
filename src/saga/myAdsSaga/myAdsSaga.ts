@@ -21,6 +21,13 @@ import {
   deleteAdRequested,
   deleteAdSucceed,
   deleteAdFailed,
+  getMyProAdsCountRequested,
+  getIsMyProAdsActiveRequested,
+  getMyProAdsCountSucceed,
+  getMyProAdsCountFailed,
+  getIsMyProAdsActiveSucceed,
+  getIsMyProAdsActiveFailed,
+  setSkip,
 } from '@/src/redux/slices/myAds'
 import {
   getMyProAds,
@@ -30,9 +37,12 @@ import {
   setProAdsPublic,
   extendAd,
   deleteAd,
+  getMyProAdsCount,
+  getIsMyProAdsActive,
 } from '@/src/saga/myAdsSaga/api'
 import { GetMyProAdsPayload, SetAdPublicPayload, isPublicPayload, adIdPayload } from '@/src/types/redux/myAds'
 import { PayloadAction } from '@reduxjs/toolkit'
+import { getCompanyProfileAdsCountRequested } from '@/src/redux/slices/pro'
 
 function* fetchMyProAds(action: PayloadAction<GetMyProAdsPayload>) {
   try {
@@ -73,15 +83,15 @@ function* updateCommonAdsPublicStatus(action: PayloadAction<isPublicPayload>) {
 function* updateProAdsPublicStatus(action: PayloadAction<isPublicPayload>) {
   try {
     yield call(setProAdsPublic, action.payload)
-    yield put(setProAdsPublicSucceed())
+    yield put(setProAdsPublicSucceed(action.payload))
   } catch (error: any) {
     yield put(setProAdsPublicFailed(error.response.data))
   }
 }
 
-function* extendAdById(action: PayloadAction<adIdPayload>) {
+function* extendAdById(action: PayloadAction<string>) {
   try {
-    yield call(extendAd, action.payload)
+    yield call(extendAd, { adId: action.payload })
     yield put(extendAdSucceed())
   } catch (error: any) {
     yield put(extendAdFailed(error.response.data))
@@ -97,6 +107,33 @@ function* deleteAdById(action: PayloadAction<adIdPayload>) {
   }
 }
 
+function* fetchMyProAdsCount() {
+  try {
+    const { data } = yield call(getMyProAdsCount)
+    yield put(getMyProAdsCountSucceed(data))
+  } catch (error: any) {
+    yield put(getMyProAdsCountFailed(error.response.data))
+  }
+}
+
+function* fetchIsMyProAdsActive() {
+  try {
+    const { data } = yield call(getIsMyProAdsActive)
+    yield put(getIsMyProAdsActiveSucceed(data))
+  } catch (error: any) {
+    yield put(getIsMyProAdsActiveFailed(error.response.data))
+  }
+}
+
+function* handleShowMoreSaga(action: PayloadAction<{ skip: number; limit: number }>) {
+  try {
+    yield put(setSkip({ skip: action.payload.skip + 5 }))
+    yield put(getMyProAdsRequested({ skip: action.payload.skip + 5, limit: action.payload.limit }))
+  } catch (error: any) {
+    console.error('Error in handleShowMoreSaga:', error)
+  }
+}
+
 function* myAdsSaga() {
   yield takeLatest(getMyProAdsRequested.type, fetchMyProAds)
   yield takeLatest(getMyCommonAdsRequested.type, fetchMyCommonAds)
@@ -105,6 +142,10 @@ function* myAdsSaga() {
   yield takeLatest(setProAdsPublicRequested.type, updateProAdsPublicStatus)
   yield takeLatest(extendAdRequested.type, extendAdById)
   yield takeLatest(deleteAdRequested.type, deleteAdById)
+  yield takeLatest(getMyProAdsCountRequested.type, fetchMyProAdsCount)
+  yield takeLatest(getIsMyProAdsActiveRequested.type, fetchIsMyProAdsActive)
+
+  yield takeLatest('myAds/handleShowMore', handleShowMoreSaga)
 }
 
 export default myAdsSaga
