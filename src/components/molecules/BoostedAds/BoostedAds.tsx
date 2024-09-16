@@ -17,7 +17,7 @@ const getFlagImage = (countryCode: string) => {
 }
 
 const BoostedAds = ({ content }: Props) => {
-  const { t } = useTranslation('promotion')
+  const { t } = useTranslation(['promotion', 'common'])
   const dispatch = useDispatch()
   const { palette } = useTheme()
 
@@ -69,7 +69,7 @@ const BoostedAds = ({ content }: Props) => {
                 {t('promotion_service')} - {content === 'xl' ? 'Объявление XL' : 'Поднять объявление'}
               </Typography>
               <Typography color={palette.text.primary} fontSize="16px" fontWeight={600}>
-                {t('common:date.connectedBefore')}
+                {t('common:date.connected_before')}{' '}
                 {content === 'xl'
                   ? new Date(ad.largeBefore.iso).toLocaleString()
                   : new Date(ad.boostedBefore.iso).toLocaleString()}

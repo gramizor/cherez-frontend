@@ -20,9 +20,11 @@ import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteCo
 import { enableAdBoostRequested, setAdLargeRequested } from '@/src/redux/slices/promotion'
 import { palette } from '@/src/theme/palette'
 import { DeleteCompanyProfile } from '@/src/types/redux/pro'
+import { useRouter } from 'next/router'
 
 const MyAdsSection = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { t } = useTranslation('myAds')
   const isLoading = useSelector((state: RootState) => state.myAds.loading)
   const myCommonAds = useSelector((state: RootState) => state.myAds.myAds)
@@ -62,6 +64,7 @@ const MyAdsSection = () => {
       setAdLargeRequested({
         adId,
         successCallback: () => dispatch(getMyCommonAdsRequested()),
+        failedCallback: () => router.push(`/promotion/xl`),
       })
     )
   }
@@ -71,6 +74,7 @@ const MyAdsSection = () => {
       enableAdBoostRequested({
         adId,
         successCallback: () => dispatch(getMyCommonAdsRequested()),
+        failedCallback: () => router.push(`/promotion/raise`),
       })
     )
   }

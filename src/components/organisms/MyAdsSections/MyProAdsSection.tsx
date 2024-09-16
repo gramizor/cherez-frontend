@@ -27,9 +27,11 @@ import { enableAdBoostRequested, setAdLargeRequested } from '@/src/redux/slices/
 import LoadingCircular from '../../atoms/LoadingCircular/LoadingCircular.styled'
 import { createAdPromotionLoading } from '@/src/redux/selectors/promotion'
 import { showErrorMessage } from '@/src/utils/useNotification'
+import { useRouter } from 'next/router'
 
 const MyProAdsSection = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { t } = useTranslation(['myAds', 'common'])
   const myProAds = useSelector((state: RootState) => state.myAds.myProAds)
   const adsPro = useSelector(selectProProfiles)
@@ -87,6 +89,7 @@ const MyProAdsSection = () => {
       setAdLargeRequested({
         adId,
         successCallback: () => dispatch(getMyProAdsRequested({ skip, limit })),
+        failedCallback: () => router.push(`/promotion/xl`),
       })
     )
   }
@@ -96,6 +99,7 @@ const MyProAdsSection = () => {
       enableAdBoostRequested({
         adId,
         successCallback: () => dispatch(getMyProAdsRequested({ skip, limit })),
+        failedCallback: () => router.push(`/promotion/raise`),
       })
     )
   }

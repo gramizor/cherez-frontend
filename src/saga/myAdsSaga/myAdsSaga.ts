@@ -137,7 +137,7 @@ function* fetchIsMyProAdsActive() {
 
 function* handleShowMoreSaga(action: PayloadAction<{ skip: number; limit: number }>) {
   try {
-    const newLimit = action.payload.limit + 2
+    const newLimit = action.payload.limit + 5
     yield put(setLimit(newLimit))
     yield put(getMyProAdsRequested({ skip: action.payload.skip, limit: newLimit }))
   } catch (error: any) {

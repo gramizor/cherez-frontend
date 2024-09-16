@@ -10,7 +10,7 @@ const initialState: myAdsState = {
   myProAds: [],
   params: {
     skip: 0,
-    limit: 2,
+    limit: 5,
   },
   proAdsCount: 0,
   isActive: false,

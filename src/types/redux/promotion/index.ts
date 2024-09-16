@@ -17,6 +17,7 @@ export interface createAdPromotionRequestState {
 export interface adBoostState {
   adId: string
   successCallback?: () => void
+  failedCallback?: () => void
 }
 
 export interface myPromotions {

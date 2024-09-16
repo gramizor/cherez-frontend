@@ -56,7 +56,7 @@ const categories = [
   CategoriesType.Other,
 ]
 
-const PromotionCategory: React.FC = () => {
+const PromotionCategory = () => {
   const { palette, breakpoints } = useTheme()
   const isLarge = useMediaQuery(breakpoints.up('md'))
   const { t } = useTranslation(['promotion', 'common', 'categories'])

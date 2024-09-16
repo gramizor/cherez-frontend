@@ -1,9 +1,12 @@
 {
   "ad_id": "Ad ID",
   "days_until": "Days until deletion",
+  "months_until": "Months left",
   "extend": "Extend",
   "my_common_ads": "Active ads",
   "no_common_ads": "No active ads",
   "my_pro_ads_active": "Active ads",
-  "no_pro_ads": "No active ads"
+  "no_pro_ads": "No active ads",
+  "all_active_ads": "My ads",
+  "promotion_pro_category": "Category"
 }

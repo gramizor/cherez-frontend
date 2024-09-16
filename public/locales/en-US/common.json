@@ -61,5 +61,6 @@
   "are_you_sure": "Are you sure you want to delete",
   "delete": "Delete",
   "draft": "Draft",
-  "done_pro": "Completed"
+  "done_pro": "Completed",
+  "days_until": "Days until deletion"
 }

@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react'
 import MainTopActions from '../../organisms/MainTopActions'
 import LeftMenu from '../../molecules/LeftMenu'
 import Image from 'next/image'
-import cherezPlus from 'src/assets/images/promotion/cherezplus.svg'
+import cherezPlus from 'src/assets/images/promotion/pro_icon.svg'
 import MyAdsSection from '../../organisms/MyAdsSections/MyAdsSection'
 import MyProAdsSection from '../../organisms/MyAdsSections/MyProAdsSection'
 
 const MyAdsPageWrapper = () => {
   const { breakpoints } = useTheme()
   const isLarge = useMediaQuery(breakpoints.up('md'))
-  const { t } = useTranslation('promotion')
+  const { t } = useTranslation('myAds')
   const [isPro, setIsPro] = useState(false)
 
   return (
@@ -34,8 +34,13 @@ const MyAdsPageWrapper = () => {
         >
           <Box width="100%">
             <Tabs value={isPro ? 1 : 0} onChange={(e, value) => setIsPro(value === 1)} variant="fullWidth">
-              <Tab label={t('all_active_ads')} />
-              <Tab label={t('promotion_pro_category')} icon={<Image src={cherezPlus} alt={cherezPlus} width={130} />} />
+              <Tab label={<h3 style={{ marginTop: 2 }}>{t('all_active_ads')}</h3>} />
+              <Tab
+                label={<h3 style={{ marginTop: 2 }}>{t('promotion_pro_category')} </h3>}
+                icon={<Image src={cherezPlus} alt={cherezPlus} width={61} />}
+                iconPosition="end"
+                style={{ display: 'flex', alignItems: 'center' }}
+              />
             </Tabs>
           </Box>
           <Box flex="1" ml={isLarge ? 4 : 0} mr={isLarge ? 4 : 0} display="flex" width="100%">

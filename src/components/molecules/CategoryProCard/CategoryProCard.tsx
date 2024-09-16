@@ -15,7 +15,7 @@ interface CategoryProCardProps {
 
 const CategoryProCard: React.FC<CategoryProCardProps> = ({ ad, onDeleteClick }) => {
   const { palette } = useTheme()
-  const { t } = useTranslation(['promotion', 'common', 'categories'])
+  const { t } = useTranslation(['promotion', 'common', 'categories', 'myAds'])
   const router = useRouter()
 
   const isActive = new Date(ad.endsAt.iso) > new Date()
@@ -49,7 +49,7 @@ const CategoryProCard: React.FC<CategoryProCardProps> = ({ ad, onDeleteClick }) 
             </Typography>
             <Typography fontSize="16px" fontWeight={500} whiteSpace="nowrap">
               {isActive
-                ? `${getMonthDifference(new Date(ad.startedAt.iso), new Date(ad.endsAt.iso))} ${t('common:months')}`
+                ? `${t('myAds:months_until')}: ${getMonthDifference(new Date(ad.startedAt.iso), new Date(ad.endsAt.iso))}`
                 : t('common:done_pro')}
             </Typography>
           </Stack>
@@ -60,7 +60,7 @@ const CategoryProCard: React.FC<CategoryProCardProps> = ({ ad, onDeleteClick }) 
                 {t('common:date.connected_after')} {new Date(ad.endsAt.iso).toLocaleString()}
               </Typography>
               <Typography color={palette.text.primary} fontSize="16px" fontWeight={500}>
-                {isActive ? '' : `${t('common:days_until_delete')} ${daysUntilNextMonth} ${t('common:days')}`}
+                {isActive ? '' : `${t('myAds:days_until')} ${daysUntilNextMonth}`}
               </Typography>
             </Stack>
             <IconButton
