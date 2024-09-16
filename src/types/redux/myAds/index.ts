@@ -9,6 +9,7 @@ export interface GetMyProAdsPayload {
 export interface SetAdPublicPayload {
   adId: string
   isPublic: boolean
+  type: 'pro' | 'common'
 }
 
 export interface isPublicPayload {

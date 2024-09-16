@@ -190,7 +190,7 @@ const PromotionCategory: React.FC = () => {
             padding: '12px 15px 11px',
             color: palette.info.main,
             '&:hover': {
-              background: palette.customColors.darkBackground,
+              background: isDisable() ? palette.customColors.lightBackground : palette.primary.dark,
             },
           }}
           disabled={isDisable()}

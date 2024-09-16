@@ -15,11 +15,13 @@ import toast from 'react-hot-toast'
 import TextButton from '../../atoms/TextButton'
 import BoostedAds from '../../molecules/BoostedAds/BoostedAds'
 import useRequestStatus from '@/src/utils/useRequestStatus'
+import { useRouter } from 'next/router'
 
 const PromotionRaise = () => {
   const { palette } = useTheme()
   const { t } = useTranslation('promotion')
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const [selectedPeriod, setSelectedPeriod] = useState<number>(0)
   const [selectedCurrencyIds, setSelectedCurrencyIds] = useState<string[]>([])
@@ -41,7 +43,9 @@ const PromotionRaise = () => {
     })
   }
 
-  const [startRequest] = useRequestStatus(loading, error, t('promotionSuccess'))
+  const [startRequest] = useRequestStatus(loading, error, t('promotionSuccess'), () => {
+    router.push(`/announcements`)
+  })
   const handleSubmit = () => {
     const payload: createAdPromotionRequestState = {
       promotionName: 'boost',
@@ -101,6 +105,9 @@ const PromotionRaise = () => {
             borderRadius: '10px',
             padding: '12px 15px 11px',
             color: palette.info.main,
+            '&:hover': {
+              background: isDisable() ? palette.customColors.lightBackground : palette.primary.dark,
+            },
           }}
           disabled={isDisable()}
           onClick={handleSubmit}

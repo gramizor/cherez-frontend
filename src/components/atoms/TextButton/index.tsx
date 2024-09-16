@@ -16,6 +16,7 @@ const TextButton = ({ isSelected, text, onClick, sx, isBlack = false }: Props) =
       onClick={onClick}
       variant="h5"
       fontWeight={500}
+      className="noSelect"
       sx={{
         '&:hover': {
           background: palette.primary.light,

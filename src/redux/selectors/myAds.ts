@@ -14,4 +14,4 @@ export const getMyProProfiles = createSelector(
   myProProfiles => myProProfiles
 )
 
-export const getSkipMyAds = createSelector([(state: RootState) => state.myAds.params.skip], skip => skip)
+export const getLimitMyAds = createSelector([(state: RootState) => state.myAds.params.limit], limit => limit)

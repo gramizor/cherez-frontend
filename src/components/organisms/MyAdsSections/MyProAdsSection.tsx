@@ -3,6 +3,7 @@ import { Box, Button, Stack, Typography } from '@mui/material'
 import { RootState } from '@/src/redux/rootReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  clearMyProAds,
   deleteAdRequested,
   extendAdRequested,
   getIsMyProAdsActiveRequested,
@@ -19,31 +20,34 @@ import { selectProProfiles } from '@/src/redux/selectors/pro'
 import { DeleteCompanyProfile, ProProfile } from '@/src/types/redux/pro'
 import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
 import { deleteCompanyProfileRequested, getMyCompanyProfilesRequested } from '@/src/redux/slices/pro'
-import { getLoadingMyAds, getSkipMyAds } from '@/src/redux/selectors/myAds'
+import { getLimitMyAds, getLoadingMyAds } from '@/src/redux/selectors/myAds'
 import RadioSliderButton from '../../buttons/RadioSliderButton/RadioSliderButton'
 import { palette } from '@/src/theme/palette'
 import { enableAdBoostRequested, setAdLargeRequested } from '@/src/redux/slices/promotion'
-import { adBoostState } from '@/src/types/redux/promotion'
 import LoadingCircular from '../../atoms/LoadingCircular/LoadingCircular.styled'
+import { createAdPromotionLoading } from '@/src/redux/selectors/promotion'
+import { showErrorMessage } from '@/src/utils/useNotification'
 
 const MyProAdsSection = () => {
   const dispatch = useDispatch()
-  const { t } = useTranslation('promotion')
+  const { t } = useTranslation(['myAds', 'common'])
   const myProAds = useSelector((state: RootState) => state.myAds.myProAds)
   const adsPro = useSelector(selectProProfiles)
   const total = useSelector((state: RootState) => state.myAds.proAdsCount)
-  const skip = useSelector(getSkipMyAds)
+  const skip = 0
+  const limit = useSelector(getLimitMyAds)
   const isLoading = useSelector(getLoadingMyAds)
+  const loadingHandler = useSelector(createAdPromotionLoading)
 
   const [open, setOpen] = useState<boolean>(false)
   const [selectedId, setSelectedId] = useState<DeleteCompanyProfile | null>(null)
-  const [isActive, setIsActive] = useState(useSelector((state: RootState) => !!state.myAds.isActive))
+  const isActive = useSelector((state: RootState) => state.myAds.isActive)
 
   useEffect(() => {
     if (!isLoading) {
       dispatch(getMyCompanyProfilesRequested())
       dispatch(getMyProAdsCountRequested())
-      dispatch(getMyProAdsRequested({ skip, limit: 5 }))
+      dispatch(getMyProAdsRequested({ skip, limit }))
       dispatch(getIsMyProAdsActiveRequested())
     }
   }, [])
@@ -58,40 +62,54 @@ const MyProAdsSection = () => {
 
   const setActiveSlider = () => {
     const newIsActive = !isActive
-    setIsActive(newIsActive)
-    dispatch(setProAdsPublicRequested({ isPublic: newIsActive }))
+    dispatch(
+      setProAdsPublicRequested({
+        isPublic: newIsActive,
+        successCallback: () => dispatch(getMyProAdsRequested({ skip, limit })),
+      })
+    )
   }
 
   const handleShowMore = () => {
-    dispatch({ type: 'myAds/handleShowMore', payload: { skip, limit: 5 } })
+    dispatch({ type: 'myAds/handleShowMore', payload: { skip, limit } })
   }
 
   const handleExtend = (adId: string) => {
-    dispatch(extendAdRequested({ adId }))
+    dispatch(extendAdRequested(adId))
   }
 
   const handleDeleteAd = (adId: string) => {
     dispatch(deleteAdRequested(adId))
   }
 
-  const handleXL = (adId: adBoostState): void => {
-    dispatch(setAdLargeRequested(adId))
+  const handleXL = (adId: string): void => {
+    dispatch(
+      setAdLargeRequested({
+        adId,
+        successCallback: () => dispatch(getMyProAdsRequested({ skip, limit })),
+      })
+    )
   }
 
-  const handleBoost = (adId: adBoostState): void => {
-    dispatch(enableAdBoostRequested(adId))
+  const handleBoost = (adId: string): void => {
+    dispatch(
+      enableAdBoostRequested({
+        adId,
+        successCallback: () => dispatch(getMyProAdsRequested({ skip, limit })),
+      })
+    )
   }
 
   const togglePublicStatus = (adId: string, isPublic: boolean) => {
-    dispatch(setAdPublicRequested({ adId, isPublic }))
+    dispatch(setAdPublicRequested({ adId, isPublic, type: 'pro' }))
   }
 
   return (
     <Box position="relative">
-      <LoadingCircular isLoading={isLoading} />
+      <LoadingCircular isLoading={isLoading || loadingHandler} />
       <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}` }}>
         <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
-          {t('myProAdsActive')}: {total}
+          {t('my_pro_ads_active')}: {total}
           <RadioSliderButton checked={isActive} onChange={setActiveSlider} />
         </Typography>
       </Stack>
@@ -114,20 +132,19 @@ const MyProAdsSection = () => {
             <MyAdsCardComponent
               key={ad.objectId}
               ad={ad}
-              isActive={isActive}
               togglePublicStatus={(newStatus: boolean) => togglePublicStatus(ad.objectId, newStatus)}
               handleExtend={() => handleExtend(ad.objectId)}
               handleDeleteAd={() => handleDeleteAd(ad.objectId)}
-              handleXL={() => handleXL({ adId: ad.objectId })}
-              handleBoost={() => handleBoost({ adId: ad.objectId })}
+              handleXL={() => handleXL(ad.objectId)}
+              handleBoost={() => handleBoost(ad.objectId)}
               handleSettings={function (): void {
-                throw new Error('Function not implemented.')
+                console.error('Function not implemented.')
               }}
             />
           ))}
           {myProAds.length < total && (
             <Button variant="outlined" color="secondary" onClick={handleShowMore} sx={{ my: 4 }}>
-              {t('load_more')}
+              {t('common:load_more')}
             </Button>
           )}
         </>

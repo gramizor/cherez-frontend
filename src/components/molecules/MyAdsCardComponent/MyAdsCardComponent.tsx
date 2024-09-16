@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Typography, Stack, Button } from '@mui/material'
 import Image from 'next/image'
 import { myProAd } from '@/src/types/redux/myAds'
@@ -10,10 +10,10 @@ import dateFormatter, { calculateDaysUntil } from '@/src/utils/dateHelper'
 import { palette } from '@/src/theme/palette'
 import RadioSliderButton from '../../buttons/RadioSliderButton/RadioSliderButton'
 import { useDispatch } from 'react-redux'
+import { AdsState } from '@/src/types/models'
 
 interface MyAdsCardComponentProps {
-  ad: myProAd
-  isActive: boolean
+  ad: myProAd | AdsState
   togglePublicStatus: (newStatus: boolean) => void
   handleExtend: (adId: string) => void
   handleDeleteAd: (adId: string) => void
@@ -31,8 +31,7 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
   handleBoost,
   handleSettings,
 }) => {
-  const { t } = useTranslation('promotion')
-  const dispatch = useDispatch()
+  const { t } = useTranslation(['myAds', 'common', 'categories'])
 
   const [isPublic, setIsPublic] = useState(ad.public)
   const imagePro = getSingleImage(ad.images) || noPhoto
@@ -43,6 +42,10 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
     setIsPublic(newStatus)
     togglePublicStatus(newStatus)
   }
+
+  useEffect(() => {
+    setIsPublic(ad.public)
+  }, [ad.public])
 
   return (
     <Box
@@ -100,7 +103,7 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
               <Stack justifyContent="space-between" alignItems="center">
                 <Button onClick={() => handleExtend(ad.objectId)}>
                   <Typography variant="h4" color={palette.primary.light} fontWeight="bold">
-                    {daysUntil < 0 ? 'Продлить' : ''}
+                    {daysUntil < 0 ? t('extend') : ''}
                   </Typography>
                 </Button>
                 <Typography fontWeight="bold">{t(`categories:${ad?.categoryName}`)}</Typography>

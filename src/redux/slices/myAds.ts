@@ -1,4 +1,4 @@
-import { myAdsState } from '@/src/types/redux/myAds'
+import { myAdsState, SetAdPublicPayload } from '@/src/types/redux/myAds'
 import { addOneMonthToDate } from '@/src/utils/dateHelper'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
@@ -10,7 +10,7 @@ const initialState: myAdsState = {
   myProAds: [],
   params: {
     skip: 0,
-    limit: 10,
+    limit: 2,
   },
   proAdsCount: 0,
   isActive: false,
@@ -51,16 +51,16 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    setSkip: (state, { payload }) => {
+    setLimit: (state, { payload }) => {
       state.loading = false
-      state.params.skip = payload.skip
+      state.params.limit = payload
     },
 
     getMyProAdsRequested: (state, action) => {
       state.loading = true
     },
     getMyProAdsSucceed: (state, action) => {
-      state.myProAds = state.myProAds.length > 0 ? [...state.myProAds, ...action.payload.result] : action.payload.result
+      state.myProAds = action.payload.result
       state.error = null
       state.loading = false
     },
@@ -82,7 +82,7 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    setAdPublicRequested: (state, action: PayloadAction<{ adId: string; isPublic: boolean }>) => {
+    setAdPublicRequested: (state, action: PayloadAction<SetAdPublicPayload>) => {
       state.loading = true
     },
     setAdPublicSucceed: (state, action: PayloadAction<{ adId: string; isPublic: boolean }>) => {
@@ -102,10 +102,12 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    setCommonAdsPublicRequested: state => {
+    setCommonAdsPublicRequested: (state, action) => {
       state.loading = true
     },
-    setCommonAdsPublicSucceed: state => {
+    setCommonAdsPublicSucceed: (state, action) => {
+      state.isActive = action.payload.isPublic
+      state.myAds = state.myAds.map(ad => (ad.draft === false ? { ...ad, public: action.payload.isPublic } : ad))
       state.error = null
       state.loading = false
     },
@@ -113,6 +115,7 @@ const slice = createSlice({
       state.loading = false
       state.error = action.payload.error
     },
+
     setProAdsPublicRequested: (state, action) => {
       state.loading = true
     },
@@ -122,27 +125,35 @@ const slice = createSlice({
       state.error = null
       state.loading = false
     },
-    setProAdsPublicFailed: (state, action) => {
+    setProAdsPublicFailed: (state, action: PayloadAction<{ error: string }>) => {
       state.loading = false
       state.error = action.payload.error
     },
 
-    extendAdRequested: (state, action: PayloadAction<{ adId: string }>) => {
+    extendAdRequested: (state, action: PayloadAction<string>) => {
       state.loading = true
     },
     extendAdSucceed: (state, action: PayloadAction<{ adId: string }>) => {
       const commonAdIndex = state.myAds.findIndex(ad => ad.objectId === action.payload.adId)
-      if (commonAdIndex !== -1 && state.myAds[commonAdIndex].publishedBefore) {
-        state.myAds[commonAdIndex].publishedBefore.iso = addOneMonthToDate(new Date()).toISOString()
+      if (commonAdIndex !== -1) {
+        const commonAd = state.myAds[commonAdIndex]
+        if (commonAd.publishedBefore) {
+          commonAd.publishedBefore.iso = addOneMonthToDate(new Date()).toISOString()
+        }
       }
+
       const proAdIndex = state.myProAds.findIndex(ad => ad.objectId === action.payload.adId)
       if (proAdIndex !== -1) {
-        state.myProAds[proAdIndex].publishedBefore.iso = addOneMonthToDate(new Date()).toISOString()
+        const proAd = state.myProAds[proAdIndex]
+        if (proAd.publishedBefore) {
+          proAd.publishedBefore.iso = addOneMonthToDate(new Date()).toISOString()
+        }
       }
+
       state.error = null
       state.loading = false
     },
-    extendAdFailed: (state, action) => {
+    extendAdFailed: (state, action: PayloadAction<{ error: string }>) => {
       state.loading = false
       state.error = action.payload.error
     },
@@ -158,11 +169,32 @@ const slice = createSlice({
       state.loading = false
       state.error = action.payload.error
     },
+
+    clearMyProAds: state => {
+      state.myProAds = []
+    },
+
+    showMoreRequested: (state, action: PayloadAction<{ skip: number; limit: number }>) => {
+      state.loading = true
+    },
+    showMoreSucceed: (state, action: PayloadAction<{ result: any[] }>) => {
+      state.myProAds = [...state.myProAds, ...action.payload.result]
+      state.loading = false
+      state.error = null
+    },
+    showMoreFailed: (state, action: PayloadAction<{ error: string }>) => {
+      state.loading = false
+      state.error = action.payload.error
+    },
   },
 })
 
 export const {
-  setSkip,
+  setLimit,
+  clearMyProAds,
+  showMoreRequested,
+  showMoreSucceed,
+  showMoreFailed,
   getMyProAdsRequested,
   getMyProAdsSucceed,
   getMyProAdsFailed,

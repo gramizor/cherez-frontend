@@ -59,5 +59,7 @@
   },
   "delete_confirmation": "Delete confirmation",
   "are_you_sure": "Are you sure you want to delete",
-  "delete": "Delete"
+  "delete": "Delete",
+  "draft": "Draft",
+  "done_pro": "Completed"
 }

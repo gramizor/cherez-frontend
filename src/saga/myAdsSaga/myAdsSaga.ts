@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, take, takeLatest } from 'redux-saga/effects'
 import {
   getMyProAdsRequested,
   getMyProAdsSucceed,
@@ -27,7 +27,7 @@ import {
   getMyProAdsCountFailed,
   getIsMyProAdsActiveSucceed,
   getIsMyProAdsActiveFailed,
-  setSkip,
+  setLimit,
 } from '@/src/redux/slices/myAds'
 import {
   getMyProAds,
@@ -43,6 +43,7 @@ import {
 import { GetMyProAdsPayload, SetAdPublicPayload, isPublicPayload, adIdPayload } from '@/src/types/redux/myAds'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { getCompanyProfileAdsCountRequested } from '@/src/redux/slices/pro'
+import { showErrorMessage, showSuccessMessage } from '@/src/utils/useNotification'
 
 function* fetchMyProAds(action: PayloadAction<GetMyProAdsPayload>) {
   try {
@@ -66,6 +67,12 @@ function* updateAdPublicStatus(action: PayloadAction<SetAdPublicPayload>) {
   try {
     yield call(setAdPublic, action.payload)
     yield put(setAdPublicSucceed(action.payload))
+
+    if (action.payload.type === 'pro') {
+      yield call(fetchIsMyProAdsActive)
+    } else {
+      yield call(fetchMyCommonAds)
+    }
   } catch (error: any) {
     yield put(setAdPublicFailed(error.response.data))
   }
@@ -74,16 +81,19 @@ function* updateAdPublicStatus(action: PayloadAction<SetAdPublicPayload>) {
 function* updateCommonAdsPublicStatus(action: PayloadAction<isPublicPayload>) {
   try {
     yield call(setCommonAdsPublic, action.payload)
-    yield put(setCommonAdsPublicSucceed())
+    yield put(setCommonAdsPublicSucceed(action.payload))
   } catch (error: any) {
     yield put(setCommonAdsPublicFailed(error.response.data))
   }
 }
 
-function* updateProAdsPublicStatus(action: PayloadAction<isPublicPayload>) {
+function* updateProAdsPublicStatus(action: PayloadAction<{ isPublic: boolean; successCallback: () => void }>) {
   try {
-    yield call(setProAdsPublic, action.payload)
+    yield call(setProAdsPublic, { isPublic: action.payload.isPublic })
     yield put(setProAdsPublicSucceed(action.payload))
+    if (action.payload.successCallback) {
+      yield call(action.payload.successCallback)
+    }
   } catch (error: any) {
     yield put(setProAdsPublicFailed(error.response.data))
   }
@@ -127,10 +137,11 @@ function* fetchIsMyProAdsActive() {
 
 function* handleShowMoreSaga(action: PayloadAction<{ skip: number; limit: number }>) {
   try {
-    yield put(setSkip({ skip: action.payload.skip + 5 }))
-    yield put(getMyProAdsRequested({ skip: action.payload.skip + 5, limit: action.payload.limit }))
+    const newLimit = action.payload.limit + 2
+    yield put(setLimit(newLimit))
+    yield put(getMyProAdsRequested({ skip: action.payload.skip, limit: newLimit }))
   } catch (error: any) {
-    console.error('Error in handleShowMoreSaga:', error)
+    showErrorMessage(error)
   }
 }
 

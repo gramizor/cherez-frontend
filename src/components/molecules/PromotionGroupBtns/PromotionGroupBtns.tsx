@@ -4,9 +4,10 @@ import React, { useState } from 'react'
 import PromotionButton from '../../buttons/PromotionButton/PromotionButton'
 import { RootState } from '@/src/redux/rootReducer'
 import { useSelector } from 'react-redux'
+import { AdsState } from '@/src/types/models'
 
 type Props = {
-  ad: myProAd
+  ad: myProAd | AdsState
   handleDeleteAd: (adId: string) => void
   handleXL: (adId: string) => void
   handleBoost: (adId: string) => void
@@ -14,26 +15,15 @@ type Props = {
 }
 
 const PromotionGroupBtns: React.FC<Props> = ({ ad, handleDeleteAd, handleXL, handleBoost, handleSettings }) => {
-  const [activeButtons, setActiveButtons] = useState({
-    xl: !!ad.largeBefore?.iso,
-    plane: !!ad.boostedBefore?.iso,
-    delete: false,
-    pro: false,
-  })
-
-  const isBoosted = ad.boostedBefore?.iso
-  const isLarged = ad.largeBefore?.iso
+  const isXLActive = !!ad.largeBefore?.iso
+  const isPlaneActive = !!ad.boostedBefore?.iso
 
   return (
     <Stack direction="row" gap={2}>
-      <PromotionButton variant={'xl'} handleClick={() => handleXL(ad.objectId)} isActive={activeButtons.xl} />
-      <PromotionButton variant={'plane'} handleClick={() => handleBoost(ad.objectId)} isActive={activeButtons.plane} />
-      <PromotionButton
-        variant={'delete'}
-        handleClick={() => handleDeleteAd(ad.objectId)}
-        isActive={activeButtons.delete}
-      />
-      <PromotionButton variant={'pro'} handleClick={() => handleSettings(ad.objectId)} isActive={activeButtons.pro} />
+      <PromotionButton variant={'xl'} handleClick={() => handleXL(ad.objectId)} isActive={isXLActive} />
+      <PromotionButton variant={'plane'} handleClick={() => handleBoost(ad.objectId)} isActive={isPlaneActive} />
+      <PromotionButton variant={'delete'} handleClick={() => handleDeleteAd(ad.objectId)} isActive={false} />
+      <PromotionButton variant={'pro'} handleClick={() => handleSettings(ad.objectId)} isActive={false} />
     </Stack>
   )
 }

@@ -183,6 +183,7 @@ export type AdsState = {
   price: number
   images: string[]
   largeBefore?: AdsDateType
+  boostedBefore?: AdsDateType
   publishedAt: AdsDateType
   publishedBefore?: AdsDateType
   owner: {
@@ -192,6 +193,10 @@ export type AdsState = {
     latitude: number
     longitude: number
   }
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  draft: boolean
 }
 
 export type WalletsBalances = {

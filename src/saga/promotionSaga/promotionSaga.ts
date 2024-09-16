@@ -22,6 +22,7 @@ import {
   setAdLargeRequested,
   setAdLargeSucceed,
 } from '@/src/redux/slices/promotion'
+import { showErrorMessage, showSuccessMessage } from '@/src/utils/useNotification'
 
 function* createAdPromotionSaga(action: PayloadAction<createAdPromotionRequestState>) {
   try {
@@ -71,7 +72,13 @@ function* setAdLargeSaga(action: PayloadAction<adBoostState>) {
   try {
     yield call(setAdLarge, action.payload)
     yield put(setAdLargeSucceed())
+
+    if (action.payload.successCallback) {
+      showSuccessMessage('setAdLargeSucceed')
+      yield call(action.payload.successCallback)
+    }
   } catch (error: any) {
+    showErrorMessage('setAdLargeFailed')
     yield put(setAdLargeFailed(error.response.data))
   }
 }
@@ -80,7 +87,13 @@ function* enableAdBoostSaga(action: PayloadAction<adBoostState>) {
   try {
     yield call(enableAdBoost, action.payload)
     yield put(enableAdBoostSucceed())
+
+    if (action.payload.successCallback) {
+      showSuccessMessage('enableAdBoostSucceed')
+      yield call(action.payload.successCallback)
+    }
   } catch (error: any) {
+    showErrorMessage('enableAdBoostFailed')
     yield put(enableAdBoostFailed(error.response.data))
   }
 }

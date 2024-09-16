@@ -27,7 +27,7 @@ const PromotionMain: React.FC = () => {
       <Box mb={4}>
         <Box display="flex" alignItems="center" mb={6}>
           <Typography variant="h3" sx={{ mr: 2 }}>
-            {t('promotion:raiseAd')}
+            {t('raiseAd')}
           </Typography>
           <Image src={plane} alt={plane} />
         </Box>
@@ -45,7 +45,7 @@ const PromotionMain: React.FC = () => {
             {t('readMore')}
           </Typography>
         </Link>
-        <ChoicePrice content="week" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
+        <ChoicePrice content="week" />
         <Box display="flex" justifyContent="flex-end" mb={4}>
           <TextButton
             isSelected={true}
@@ -80,7 +80,7 @@ const PromotionMain: React.FC = () => {
             {t('readMore')}
           </Typography>
         </Link>
-        <ChoicePrice content="week" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
+        <ChoicePrice content="week" />
         <Box display="flex" justifyContent="flex-end" mb={4}>
           <TextButton
             isSelected={true}
@@ -115,7 +115,7 @@ const PromotionMain: React.FC = () => {
             {t('readMore')}
           </Typography>
         </Link>
-        <ChoicePrice content="year" selectedPeriod={selectedPeriod} onPeriodSelect={handlePeriodSelect} />
+        <ChoicePrice content="year" />
         <Box display="flex" justifyContent="flex-end">
           <TextButton
             isSelected={true}

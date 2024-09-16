@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next'
 
 interface ChoicePriceProps {
   content: 'year' | 'week'
-  selectedPeriod: number
-  onPeriodSelect: (period: number) => void
+  selectedPeriod?: number
+  onPeriodSelect?: (period: number) => void
 }
 
 const ChoicePrice: React.FC<ChoicePriceProps> = ({ content, selectedPeriod, onPeriodSelect }) => {
@@ -68,7 +68,7 @@ const ChoicePrice: React.FC<ChoicePriceProps> = ({ content, selectedPeriod, onPe
             <TextButton
               isSelected={selectedPeriod === period}
               text={`${prices[index]} USDT`}
-              onClick={() => onPeriodSelect(period)}
+              onClick={() => (onPeriodSelect ? onPeriodSelect(period) : '')}
               sx={{ fontWeight: '600', marginBottom: '10px' }}
               isBlack={true}
             />

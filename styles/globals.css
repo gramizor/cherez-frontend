@@ -77,3 +77,10 @@ a {
     color-scheme: dark;
   }
 }
+
+.noSelect {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

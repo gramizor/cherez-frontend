@@ -25,11 +25,13 @@ import {
 import toast from 'react-hot-toast'
 import BoostedAds from '../../molecules/BoostedAds/BoostedAds'
 import useRequestStatus from '@/src/utils/useRequestStatus'
+import { useRouter } from 'next/router'
 
 const PromotionXL = () => {
   const { t } = useTranslation(['promotion', 'common'])
   const dispatch = useDispatch()
   const { palette } = useTheme()
+  const router = useRouter()
 
   const loading = useSelector(createAdPromotionLoading)
   const error = useSelector(createAdPromotionError)
@@ -53,7 +55,9 @@ const PromotionXL = () => {
     })
   }
 
-  const [startRequest] = useRequestStatus(loading, error, t('promotionSuccess'))
+  const [startRequest] = useRequestStatus(loading, error, t('promotionSuccess'), () => {
+    router.push(`/announcements`)
+  })
   const handleSubmit = () => {
     const payload: createAdPromotionRequestState = {
       promotionName: 'large',
@@ -114,6 +118,9 @@ const PromotionXL = () => {
             borderRadius: '10px',
             padding: '12px 15px 11px',
             color: palette.info.main,
+            '&:hover': {
+              background: isDisable() ? palette.customColors.lightBackground : palette.primary.dark,
+            },
           }}
           disabled={isDisable()}
           onClick={handleSubmit}
