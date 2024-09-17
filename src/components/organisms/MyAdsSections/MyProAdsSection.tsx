@@ -111,8 +111,8 @@ const MyProAdsSection = () => {
   return (
     <Box position="relative">
       <LoadingCircular isLoading={isLoading || loadingHandler} />
-      <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}` }}>
-        <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
+      <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}`, mt: '35px', mb: '10px' }}>
+        <Typography fontSize="16px">
           {t('my_pro_ads_active')}: {total}
           <RadioSliderButton checked={isActive} onChange={setActiveSlider} />
         </Typography>

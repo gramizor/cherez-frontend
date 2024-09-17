@@ -33,10 +33,21 @@ const MyAdsPageWrapper = () => {
           width="100%"
         >
           <Box width="100%">
-            <Tabs value={isPro ? 1 : 0} onChange={(e, value) => setIsPro(value === 1)} variant="fullWidth">
-              <Tab label={<h3 style={{ marginTop: 2 }}>{t('all_active_ads')}</h3>} />
+            <Tabs
+              value={isPro ? 1 : 0}
+              onChange={(e, value) => setIsPro(value === 1)}
+              variant="fullWidth"
+              TabIndicatorProps={{
+                style: { backgroundColor: 'black' },
+              }}
+              sx={{
+                '& .MuiTab-root': { textTransform: 'none' },
+                '& .Mui-selected': { color: 'black' },
+              }}
+            >
+              <Tab label={<h3 style={{ marginTop: 2, fontSize: '20px' }}>{t('all_active_ads')}</h3>} />
               <Tab
-                label={<h3 style={{ marginTop: 2 }}>{t('promotion_pro_category')} </h3>}
+                label={<h3 style={{ marginTop: 2, fontSize: '20px' }}>{t('promotion_pro_category')} </h3>}
                 icon={<Image src={cherezPlus} alt={cherezPlus} width={61} />}
                 iconPosition="end"
                 style={{ display: 'flex', alignItems: 'center' }}

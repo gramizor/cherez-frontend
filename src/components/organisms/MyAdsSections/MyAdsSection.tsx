@@ -86,8 +86,8 @@ const MyAdsSection = () => {
   return (
     <Box position="relative">
       <LoadingCircular isLoading={isLoading} />
-      <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}` }}>
-        <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
+      <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}`, mt: '35px', mb: '10px' }}>
+        <Typography fontSize="16px">
           {t('my_common_ads')}: {myCommonAds.length}/20
           <RadioSliderButton checked={isActive} onChange={setActiveSlider} />
         </Typography>
@@ -108,7 +108,9 @@ const MyAdsSection = () => {
           />
         ))
       ) : (
-        <Typography variant="body1">{t('no_common_ads')}</Typography>
+        <Typography variant="body1" mt={7}>
+          {t('no_common_ads')}
+        </Typography>
       )}
       <ModalDeleteConfirm
         open={open}

@@ -60,8 +60,8 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
       flexDirection="column"
       flex="1"
     >
-      <Stack direction="row" flex="1" justifyContent="space-between" alignItems="center">
-        <Typography my={2}>
+      <Stack direction="row" flex="1" justifyContent="space-between" alignItems="center" mb={1}>
+        <Typography my={2} color={palette.customColors.bodyInfo}>
           {t('ad_id')} {ad.objectId}
         </Typography>
         <Stack direction="row" gap="10px" alignItems="center">
@@ -71,46 +71,46 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
             </Typography>
           ) : (
             ad?.publishedAt?.iso && (
-              <Typography my={2}>
+              <Typography my={2} color={palette.customColors.bodyInfo}>
                 {t('days_until')}: {calculateDaysUntil(ad?.publishedBefore?.iso)}
               </Typography>
             )
           )}
-          <Typography my={2}>
+          <Typography my={2} color={palette.customColors.bodyInfo}>
             {ad?.publishedAt?.iso ? dateFormatter(ad?.publishedAt?.iso) : t('common:draft')}
           </Typography>
         </Stack>
       </Stack>
-      <Stack direction="row" flex="1" width="100%">
+      <Stack direction="row" flex="1" width="100%" gap="10px">
         <Stack width={200} height={135} position="relative">
           <Image src={imagePro} alt={ad.objectId} layout="fill" objectFit="cover" />
         </Stack>
         <Stack flexDirection="column" flex="1" pl={2} justifyContent="space-between" gap="10px">
-          <Stack direction="column" flex="1">
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack direction="column" flex="1" height="100%">
+            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" position="relative">
               <Typography variant="h5" fontWeight="bold" mr={1}>
                 {ad.price} {ad.currencyCode}
               </Typography>
-              <RadioSliderButton checked={isPublic} onChange={handleTogglePublicStatus} />
+              <RadioSliderButton
+                checked={isPublic}
+                onChange={handleTogglePublicStatus}
+                sx={{ position: 'absolute', top: -10, right: 0 }}
+              />
             </Stack>
-            <Stack direction="row" justifyContent="space-between" flex="1">
-              <Stack direction="column" gap="5px">
-                <Typography fontWeight="bold">{ad.label}</Typography>
-                <Typography variant="h5" mr={1}>
-                  {ad.description}
-                </Typography>
-              </Stack>
-              <Stack justifyContent="space-between" alignItems="center">
-                <Button onClick={() => handleExtend(ad.objectId)}>
-                  <Typography variant="h4" color={palette.primary.light} fontWeight="bold">
-                    {daysUntil < 0 ? t('extend') : ''}
+            <Stack direction="row" gap="5px" justifyContent="space-between" mt={2}>
+              <Typography fontWeight="bold" color={palette.customColors.bodyInfo} sx={{ maxWidth: '250px' }}>
+                {ad.label}
+              </Typography>
+              {daysUntil < 0 ? (
+                <Button onClick={() => handleExtend(ad.objectId)} sx={{ padding: 0 }}>
+                  <Typography fontWeight="bold" color={palette.primary.light}>
+                    {t('extend')}
                   </Typography>
                 </Button>
-                <Typography fontWeight="bold">{t(`categories:${ad?.categoryName}`)}</Typography>
-              </Stack>
+              ) : null}
             </Stack>
           </Stack>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack direction="row" justifyContent="space-between" alignItems="flex-end">
             <Stack direction="row">
               {ad?.country && (
                 <Image
@@ -124,13 +124,20 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
                 {ad.country} {ad.city}
               </Typography>
             </Stack>
-            <PromotionGroupBtns
-              ad={ad}
-              handleDeleteAd={handleDeleteAd}
-              handleXL={handleXL}
-              handleBoost={handleBoost}
-              handleSettings={handleSettings}
-            />
+            <Stack direction="column" alignItems="flex-end" gap="10px">
+              <Stack justifyContent="flex-end" alignItems="flex-end" flexDirection="row">
+                <Typography fontWeight="bold" fontSize="16px">
+                  {t(`categories:${ad?.categoryName}`)}
+                </Typography>
+              </Stack>
+              <PromotionGroupBtns
+                ad={ad}
+                handleDeleteAd={handleDeleteAd}
+                handleXL={handleXL}
+                handleBoost={handleBoost}
+                handleSettings={handleSettings}
+              />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>
