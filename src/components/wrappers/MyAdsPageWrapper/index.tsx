@@ -42,7 +42,8 @@ const MyAdsPageWrapper = () => {
               }}
               sx={{
                 '& .MuiTab-root': { textTransform: 'none' },
-                '& .Mui-selected': { color: 'black' },
+                '& .Mui-selected': { color: 'black', borderBottom: '3px solid black' },
+                '& .MuiTab-root.Mui-selected': { color: 'black' },
               }}
             >
               <Tab label={<h3 style={{ marginTop: 2, fontSize: '20px' }}>{t('all_active_ads')}</h3>} />

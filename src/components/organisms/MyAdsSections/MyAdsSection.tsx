@@ -86,8 +86,8 @@ const MyAdsSection = () => {
   return (
     <Box position="relative">
       <LoadingCircular isLoading={isLoading} />
-      <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}`, mt: '35px', mb: '10px' }}>
-        <Typography fontSize="16px">
+      <Stack flexDirection="row" sx={{ borderBottom: `1px solid ${palette.black}`, mt: '35px' }}>
+        <Typography fontSize="16px" sx={{ mb: '10px' }}>
           {t('my_common_ads')}: {myCommonAds.length}/20
           <RadioSliderButton checked={isActive} onChange={setActiveSlider} />
         </Typography>
