@@ -45,7 +45,12 @@ const MyAdsSection = () => {
   }
 
   const handleDeleteAd = (adId: string) => {
-    dispatch(deleteAdRequested(adId))
+    dispatch(
+      deleteAdRequested({
+        adId,
+        successCallback: () => dispatch(getMyCommonAdsRequested()),
+      })
+    )
   }
 
   const handleXL = (adId: string): void => {
