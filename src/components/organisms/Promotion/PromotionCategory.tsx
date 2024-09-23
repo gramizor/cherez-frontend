@@ -63,11 +63,9 @@ const PromotionCategory = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const [open, setOpen] = useState<boolean>(false)
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [selectedPeriod, setSelectedPeriod] = useState<number>(0)
   const [selectedCurrencyIds, setSelectedCurrencyIds] = useState<string[]>([])
-  const [selectedId, setSelectedId] = useState<DeleteCompanyProfile | null>(null)
 
   const adsPro = useSelector(selectProProfiles)
   const selectedPro = useSelector(selectSingleProProfile)
@@ -113,13 +111,8 @@ const PromotionCategory = () => {
     return !selectedPeriod || selectedCurrencyIds.length === 0 || !selectedCategory
   }
 
-  const handleDelete = () => {
-    if (selectedId) {
-      console.log('Deleting profile with id:', selectedId.profileId)
-      dispatch(deleteCompanyProfileRequested(selectedId))
-      setOpen(false)
-      dispatch(getMyCompanyProfilesRequested())
-    }
+  const handleDeleteProfile = (profileId: string) => {
+    dispatch(deleteCompanyProfileRequested({ profileId }))
   }
 
   return (
@@ -211,21 +204,12 @@ const PromotionCategory = () => {
                 <CategoryProCard
                   key={ad.objectId}
                   ad={ad}
-                  onDeleteClick={(profileId: string) => {
-                    setSelectedId({ profileId })
-                    setOpen(true)
-                  }}
+                  handleDeleteProfile={() => handleDeleteProfile(ad.objectId)}
                 />
               ))}
           </Box>
         )}
       </Box>
-      <ModalDeleteConfirm
-        open={open}
-        onClose={() => setOpen(false)}
-        onDelete={handleDelete}
-        profileId={selectedId?.profileId}
-      />
     </>
   )
 }

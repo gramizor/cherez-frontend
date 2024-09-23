@@ -23,5 +23,6 @@ export const palette = {
     tabText: '#2F2F2F',
     titleText: '#2D2C2C',
     redLight: '#F14141',
+    greyInfo: '#4B4B4B',
   },
 }

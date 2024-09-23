@@ -17,8 +17,7 @@ import MyAdsCardComponent from '../../molecules/MyAdsCardComponent/MyAdsCardComp
 import { myProAd } from '@/src/types/redux/myAds'
 import CategoryProCard from '../../molecules/CategoryProCard/CategoryProCard'
 import { selectProProfiles } from '@/src/redux/selectors/pro'
-import { DeleteCompanyProfile, ProProfile } from '@/src/types/redux/pro'
-import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
+import { ProProfile } from '@/src/types/redux/pro'
 import { deleteCompanyProfileRequested, getMyCompanyProfilesRequested } from '@/src/redux/slices/pro'
 import { getLimitMyAds, getLoadingMyAds } from '@/src/redux/selectors/myAds'
 import RadioSliderButton from '../../buttons/RadioSliderButton/RadioSliderButton'
@@ -41,8 +40,6 @@ const MyProAdsSection = () => {
   const isLoading = useSelector(getLoadingMyAds)
   const loadingHandler = useSelector(createAdPromotionLoading)
 
-  const [open, setOpen] = useState<boolean>(false)
-  const [selectedId, setSelectedId] = useState<DeleteCompanyProfile | null>(null)
   const isActive = useSelector((state: RootState) => state.myAds.isActive)
 
   useEffect(() => {
@@ -54,12 +51,8 @@ const MyProAdsSection = () => {
     }
   }, [])
 
-  const handleDelete = () => {
-    if (selectedId) {
-      dispatch(deleteCompanyProfileRequested(selectedId))
-      setOpen(false)
-      dispatch(getMyCompanyProfilesRequested())
-    }
+  const handleDeleteProfile = (profileId: string) => {
+    dispatch(deleteCompanyProfileRequested({ profileId }))
   }
 
   const setActiveSlider = () => {
@@ -80,8 +73,13 @@ const MyProAdsSection = () => {
     dispatch(extendAdRequested(adId))
   }
 
-  const handleDeleteAd = (adId: string) => {
-    dispatch(deleteAdRequested(adId))
+  const handleDeleteAd = (adId: string): void => {
+    dispatch(
+      deleteAdRequested({
+        adId,
+        successCallback: () => dispatch(getMyProAdsRequested({ skip, limit })),
+      })
+    )
   }
 
   const handleXL = (adId: string): void => {
@@ -123,10 +121,7 @@ const MyProAdsSection = () => {
             <CategoryProCard
               key={proCategory.objectId}
               ad={proCategory}
-              onDeleteClick={(profileId: string) => {
-                setSelectedId({ profileId })
-                setOpen(true)
-              }}
+              handleDeleteProfile={() => handleDeleteProfile(proCategory.objectId)}
             />
           ))}
       </Box>
@@ -155,12 +150,6 @@ const MyProAdsSection = () => {
       ) : (
         <Typography variant="body1">{t('no_pro_ads')}</Typography>
       )}
-      <ModalDeleteConfirm
-        open={open}
-        onClose={() => setOpen(false)}
-        onDelete={handleDelete}
-        profileId={selectedId?.profileId}
-      />
     </Box>
   )
 }

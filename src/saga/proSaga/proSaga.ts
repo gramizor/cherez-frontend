@@ -114,6 +114,7 @@ function* deleteCompanyProfileSaga(action: PayloadAction<DeleteCompanyProfile>) 
   try {
     yield call(deleteCompanyProfile, action.payload)
     yield put(deleteCompanyProfileSucceed(action.payload))
+    yield call(getMyCompanyProfiles)
   } catch (error: any) {
     yield put(deleteCompanyProfileFailed(error.response.data))
   }

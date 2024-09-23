@@ -8,5 +8,15 @@
   "my_pro_ads_active": "Активные объявления",
   "no_pro_ads": "Нет активных объявлений",
   "all_active_ads": "Мои объявления",
-  "promotion_pro_category": "Категория"
+  "promotion_pro_category": "Категория",
+  "confirm_xl": "Применить xl ",
+  "confirm_boost": "Применить boost",
+  "delete_confirm_ad": "Удалить объявление",
+  "delete_confirmation": "Вы действительно хотите удалить объявление",
+  "boost_confirmation": "Вы действительно хотите применить boost к объявлению",
+  "xl_confirmation": "Вы действительно хотите применить xl к объявлению",
+  "xl_boost": "Применить",
+  "plane_boost": "Применить",
+  "cancel": "отмена",
+  "delete": "удалить"
 }

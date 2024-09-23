@@ -115,11 +115,11 @@ const slice = createSlice({
       state.error = action.payload.error
     },
 
-    deleteCompanyProfileRequested: (state, action: PayloadAction<DeleteCompanyProfile>) => {
+    deleteCompanyProfileRequested: (state, action: PayloadAction<{ profileId: string }>) => {
       state.loading = true
       state.error = null
     },
-    deleteCompanyProfileSucceed: (state, action: PayloadAction<DeleteCompanyProfile>) => {
+    deleteCompanyProfileSucceed: (state, action: PayloadAction<{ profileId: string }>) => {
       state.loading = false
       state.error = null
       state.proProfiles = state.proProfiles.filter(profile => profile.objectId !== action.payload.profileId)

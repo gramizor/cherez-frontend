@@ -42,5 +42,11 @@
     "categoryDesc6": "All ads placed in the pro category remain active until the end of the paid plan period.",
     "categoryDesc7": "After activating the pro category promotion service, the expiration date and plan details are displayed in the Connected Services section, along with the ability to create a company page and delete the category.",
     "categoryDesc8": "After the paid plan expires, ads are not shown and remain inactive for 20 days. During this period, you can pay for the plan again, and all ads and category settings will be restored. If you do not renew the completed pro category plan, after 20 days, all ads and settings in the selected category will be permanently deleted. Free ads in the selected category can only be placed after deleting the pro category. After deleting the pro category, all settings and ads related to this category will be deleted."
-  }
+  },
+  "delete_modal_header": "Delete the pro category",
+  "delete_confirmation1": "If you delete the category",
+  "delete_confirmation2": ", all ads of the",
+  "delete_confirmation3": "category will be deleted",
+  "cancel": "отмена",
+  "delete": "удалить"
 }

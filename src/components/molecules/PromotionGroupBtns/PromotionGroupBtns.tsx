@@ -1,10 +1,12 @@
-import { myProAd } from '@/src/types/redux/myAds'
-import { Stack } from '@mui/material'
 import React, { useState } from 'react'
+import { Button, Stack, Typography } from '@mui/material'
 import PromotionButton from '../../buttons/PromotionButton/PromotionButton'
-import { RootState } from '@/src/redux/rootReducer'
-import { useSelector } from 'react-redux'
+import { myProAd } from '@/src/types/redux/myAds'
 import { AdsState } from '@/src/types/models'
+import UIModal from '../../UI/UIModal/UIModal'
+import UIModalButtonsGroup from '../../UI/UIModalButtonsGroup/UIModalButtonsGroup'
+import { palette } from '@/src/theme/palette'
+import { useTranslation } from 'next-i18next'
 
 type Props = {
   ad: myProAd | AdsState
@@ -15,15 +17,89 @@ type Props = {
 }
 
 const PromotionGroupBtns: React.FC<Props> = ({ ad, handleDeleteAd, handleXL, handleBoost, handleSettings }) => {
+  const { t } = useTranslation(['myAds', 'common'])
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [isXlModalOpen, setXlModalOpen] = useState(false)
+  const [isPlaneModalOpen, setPlaneModalOpen] = useState(false)
   const isXLActive = !!ad.largeBefore?.iso
   const isPlaneActive = !!ad.boostedBefore?.iso
 
+  const openDeleteModal = () => setDeleteModalOpen(true)
+  const openXlModal = () => setXlModalOpen(true)
+  const openPlaneModal = () => setPlaneModalOpen(true)
+  const closeDeleteModal = () => setDeleteModalOpen(false)
+  const closeXlModal = () => setXlModalOpen(false)
+  const closePlaneModal = () => setPlaneModalOpen(false)
+
+  const confirmDeleteAd = () => {
+    handleDeleteAd(ad.objectId)
+    closeDeleteModal()
+  }
+
+  const confirmXl = () => {
+    handleXL(ad.objectId)
+    closeXlModal()
+  }
+
+  const confirmPlane = () => {
+    handleBoost(ad.objectId)
+    closePlaneModal()
+  }
+
   return (
     <Stack direction="row" gap={2}>
-      <PromotionButton variant={'xl'} handleClick={() => handleXL(ad.objectId)} isActive={isXLActive} />
-      <PromotionButton variant={'plane'} handleClick={() => handleBoost(ad.objectId)} isActive={isPlaneActive} />
-      <PromotionButton variant={'delete'} handleClick={() => handleDeleteAd(ad.objectId)} isActive={false} />
-      <PromotionButton variant={'pro'} handleClick={() => handleSettings(ad.objectId)} isActive={false} />
+      <UIModal
+        open={isXlModalOpen}
+        onClose={closeXlModal}
+        triggerButton={<PromotionButton variant="xl" handleClick={openXlModal} isActive={isXLActive} />}
+        header={t('confirm_xl')}
+      >
+        <Typography color={palette.customColors.greyInfo} fontSize={16}>
+          {t('xl_confirmation')} {ad.label} ?
+        </Typography>
+        <UIModalButtonsGroup
+          cancelText={t('cancel')}
+          confirmText={t('xl_boost')}
+          onCancel={closeXlModal}
+          onConfirm={confirmXl}
+        />
+      </UIModal>
+
+      <UIModal
+        open={isPlaneModalOpen}
+        onClose={closePlaneModal}
+        triggerButton={<PromotionButton variant="plane" handleClick={openPlaneModal} isActive={isPlaneActive} />}
+        header={t('confirm_boost')}
+      >
+        <Typography color={palette.customColors.greyInfo} fontSize={16}>
+          {t('boost_confirmation')} {ad.label} ?
+        </Typography>
+        <UIModalButtonsGroup
+          cancelText={t('cancel')}
+          confirmText={t('plane_boost')}
+          onCancel={closePlaneModal}
+          onConfirm={confirmPlane}
+        />
+      </UIModal>
+
+      <UIModal
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        triggerButton={<PromotionButton variant="delete" handleClick={openDeleteModal} isActive={false} />}
+        header={t('delete_confirm_ad')}
+      >
+        <Typography color={palette.customColors.greyInfo} fontSize={16}>
+          {t('delete_confirmation')} {ad.label} ?
+        </Typography>
+        <UIModalButtonsGroup
+          cancelText={t('cancel')}
+          confirmText={t('delete')}
+          onCancel={closeDeleteModal}
+          onConfirm={confirmDeleteAd}
+        />
+      </UIModal>
+
+      <PromotionButton variant="pro" handleClick={() => handleSettings(ad.objectId)} isActive={false} />
     </Stack>
   )
 }

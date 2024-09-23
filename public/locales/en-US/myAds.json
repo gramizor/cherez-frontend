@@ -8,5 +8,15 @@
   "my_pro_ads_active": "Active ads",
   "no_pro_ads": "No active ads",
   "all_active_ads": "My ads",
-  "promotion_pro_category": "Category"
+  "promotion_pro_category": "Category",
+  "confirm_xl": "Apply XL",
+  "confirm_boost": "Apply Boost",
+  "delete_confirm_ad": "Delete ad",
+  "delete_confirmation": "Are you sure you want to delete this ad",
+  "boost_confirmation": "Are you sure you want to apply Boost to this ad",
+  "xl_confirmation": "Are you sure you want to apply XL to this ad",
+  "xl_boost": "Apply",
+  "plane_boost": "Apply",
+  "cancel": "Cancel",
+  "delete": "Delete"
 }

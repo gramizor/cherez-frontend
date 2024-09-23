@@ -36,7 +36,7 @@ const extendAd = (payload: { adId: string }) => {
   return axiosClient.post(path, { adId })
 }
 
-const deleteAd = (payload: adIdPayload) => {
+const deleteAd = (payload: { adId: string }) => {
   const { adId } = payload
   const path = 'functions/deleteAd'
   return axiosClient.post(path, { adId })

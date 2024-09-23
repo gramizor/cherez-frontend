@@ -108,10 +108,14 @@ function* extendAdById(action: PayloadAction<string>) {
   }
 }
 
-function* deleteAdById(action: PayloadAction<adIdPayload>) {
+function* deleteAdById(action: PayloadAction<{ adId: string; successCallback: () => void }>) {
   try {
-    yield call(deleteAd, action.payload)
+    yield call(deleteAd, { adId: action.payload.adId })
     yield put(deleteAdSucceed())
+    if (action.payload.successCallback) {
+      yield call(action.payload.successCallback)
+    }
+    yield call(getMyProAdsCount)
   } catch (error: any) {
     yield put(deleteAdFailed(error.response.data))
   }

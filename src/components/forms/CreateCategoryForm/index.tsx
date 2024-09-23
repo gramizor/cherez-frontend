@@ -18,12 +18,13 @@ import {
 import SimpleTextField from '../../fields/SimpleTextField'
 import LogoUpload from '../../fields/LogoUpload'
 import SimpleFileUploader from '../../fields/SimpleFileUploader'
-import ModalDeleteConfirm from '../../molecules/ModalDeleteConfirm/ModalDeleteConfirm'
+import UIModal from '../../UI/UIModal/UIModal'
+import UIModalButtonsGroup from '../../UI/UIModalButtonsGroup/UIModalButtonsGroup'
 
 type Props = {}
 
 const CreateCategoryForm = (props: Props) => {
-  const { t } = useTranslation(['common', 'forms'])
+  const { t } = useTranslation(['common', 'forms', 'promotion'])
   const dispatch = useDispatch()
   const { palette } = useTheme()
   const router = useRouter()
@@ -32,8 +33,8 @@ const CreateCategoryForm = (props: Props) => {
   } = useRouter()
   const imageLimit = useSelector(selectProImageLimit)
   const proProfile = useSelector(selectSingleProProfile)
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
 
-  const [open, setOpen] = useState<boolean>(false)
   const [initialValues, setInitialValues] = useState<SaveProProfile>({
     companyProfileId: '',
     companyName: '',
@@ -107,12 +108,12 @@ const CreateCategoryForm = (props: Props) => {
     }
   }, [proProfile])
 
-  const handleDelete = () => {
-    if (typeof companyProfileId === 'string') {
-      console.log('Deleting profile with id:', companyProfileId)
-      dispatch(deleteCompanyProfileRequested({ profileId: companyProfileId }))
-      setOpen(false)
-    }
+  const openDeleteModal = () => setDeleteModalOpen(true)
+  const closeDeleteModal = () => setDeleteModalOpen(false)
+
+  const confirmDeleteProfile = (profileId: string) => {
+    dispatch(deleteCompanyProfileRequested({ profileId }))
+    router.push(`/promotion/category`)
   }
 
   return (
@@ -264,17 +265,28 @@ const CreateCategoryForm = (props: Props) => {
               {t('forms:save_ad')}
             </Button>
           </Grid>
-          <Button variant="text" sx={{ fontSize: 16, color: palette.error.main, mb: 2 }} onClick={() => setOpen(true)}>
-            {t('common:delete')}
-          </Button>
+          <UIModal
+            open={isDeleteModalOpen}
+            onClose={closeDeleteModal}
+            triggerButton={
+              <Button variant="text" sx={{ fontSize: 16, color: palette.error.main, mb: 2 }} onClick={openDeleteModal}>
+                {t('common:delete')}
+              </Button>
+            }
+            header={t('promotion:delete_modal_header')}
+          >
+            <Typography color={palette.black} fontSize={16}>
+              {`${t('promotion:delete_confirmation1')} "${t(`categories:${proProfile.category}`)}" ${t('promotion:delete_confirmation2')} "${t(`categories:${proProfile.category}`)}" ${t('promotion:delete_confirmation3')}`}
+            </Typography>
+            <UIModalButtonsGroup
+              cancelText={t('promotion:cancel')}
+              confirmText={t('common:delete')}
+              onCancel={closeDeleteModal}
+              onConfirm={() => confirmDeleteProfile(proProfile.objectId)}
+            />
+          </UIModal>
         </Grid>
       </form>
-      <ModalDeleteConfirm
-        open={open}
-        onClose={() => setOpen(false)}
-        onDelete={handleDelete}
-        profileId={companyProfileId?.toString()}
-      />
     </div>
   )
 }
