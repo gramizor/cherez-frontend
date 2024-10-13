@@ -1,65 +1,74 @@
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useTranslation } from 'next-i18next'
-import { CreateAdForm } from '@/src/types/redux/adCreate'
+import { adCreateFormProps, CreateAdForm } from '@/src/types/redux/adCreate'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAdCreateForm } from '@/src/redux/selectors/adCreate'
 import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { getAllCurrenciesFilters } from '@/src/redux/selectors/filters'
 import SimpleTextField from '@/src/components/fields/SimpleTextField'
 import SimpleSelectField from '@/src/components/fields/SimpleSelectField'
-import { subcategories } from '@/src/components/dialogs/CategoriesSearchDialog/constant'
-import { CategoriesType, KeysSubcategories } from '@/src/enums/categories'
-import SimpleParamsField from '@/src/components/fields/SimpleParamsField'
 import SimpleLocationField from '@/src/components/fields/SimpleLocationField'
 import Button from '@mui/material/Button'
-import { createAdRequested, saveServicesAdRequested } from '@/src/redux/slices/adCreate'
+import { createAdRequested, saveAdRequested } from '@/src/redux/slices/adCreate'
 import { useRouter } from 'next/router'
 import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
 import SimpleFileUploader from '@/src/components/fields/SimpleFileUploader'
 
-const ServiceAdCreateForm = () => {
+const OtherAdCreateForm: React.FC<adCreateFormProps> = ({ currentInitialValues, categoryName, objectId }) => {
   const { t } = useTranslation(['common', 'forms'])
   const dispatch = useDispatch()
   const theme = useTheme()
   const { palette } = theme
   const router = useRouter()
 
-  const form = useSelector(getAdCreateForm)
   const allCurrencies = useSelector(getAllCurrenciesFilters)
 
-  const services = subcategories[CategoriesType.Services]
-
-  const initialValues: CreateAdForm = form
+  const initialValues: CreateAdForm = {
+    category: categoryName || '',
+    label: currentInitialValues?.label || '',
+    currencyCode: currentInitialValues?.currencyCode || 'USD',
+    price: currentInitialValues?.price || 0,
+    country: currentInitialValues?.country || '',
+    city: currentInitialValues?.city || '',
+    description: currentInitialValues?.description || '',
+    asDraft: currentInitialValues?.draft || false,
+    images: currentInitialValues?.images || [],
+    categoryInfo: {},
+  }
 
   const validationSchema = yup.object({})
 
   const onSubmit = (values: CreateAdForm) => {
     const onFailed = (error: Renderable | ValueFunction<Renderable, Toast>) => {
       if (typeof error === 'string') {
-        toast.error(t(`forms:${error.replace(/ /g, '_')}`), {
-          duration: 3000,
-        })
+        toast.error(t(`forms:${error.replace(/ /g, '_')}`), { duration: 3000 })
       }
     }
+    if (currentInitialValues) {
+      const onSuccess = () => {
+        toast.success(t('forms:ad_updated'))
+        router.push(`/announcements`)
+      }
+      dispatch(saveAdRequested({ ...values, category: categoryName, objectId, onSuccess, onFailed }))
+    } else {
+      const redirectToAdPage = (objectId: string) => {
+        router.push(`/ads/${objectId}`).then()
+      }
 
-    const redirectToAdPage = (objectId: string) => {
-      router.push(`/ads/${objectId}`).then()
+      const onSuccess = (objectId: string) => {
+        redirectToAdPage(objectId)
+      }
+
+      dispatch(createAdRequested({ ...values, onSuccess, onFailed }))
     }
-
-    const onSuccess = (objectId: string) => {
-      if (values.asDraft) redirectToAdPage(objectId)
-      else dispatch(saveServicesAdRequested({ ...values, onSuccess: redirectToAdPage, onFailed, objectId }))
-    }
-
-    dispatch(createAdRequested({ ...values, onSuccess, onFailed }))
   }
 
   const formik = useFormik({
     validationSchema,
-    initialValues: { ...initialValues, categoryInfo: { [services.key as KeysSubcategories]: services.array[0] } },
+    initialValues,
     onSubmit,
   })
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container>
@@ -111,14 +120,6 @@ const ServiceAdCreateForm = () => {
               />
             </Box>
           </Grid>
-        </Grid>
-
-        <Grid item xs={12} mt={{ xs: 5, md: 11 }}>
-          <SimpleParamsField
-            handleChange={item => formik.setFieldValue('categoryInfo', { [KeysSubcategories.Subcategory]: item }, true)}
-            collection={services.array}
-            selected={formik.values.categoryInfo[services.key as KeysSubcategories]}
-          />
         </Grid>
 
         <Grid item xs={12} mt={{ xs: 5, md: 20 }}>
@@ -173,7 +174,7 @@ const ServiceAdCreateForm = () => {
                   formik.setFieldValue('asDraft', false, false).then(() => formik.handleSubmit())
                 }}
               >
-                {t('forms:save_ad')}
+                {currentInitialValues ? t('forms:edit_ad') : t('forms:save_ad')}
               </Button>
             </Grid>
           </Grid>
@@ -183,4 +184,4 @@ const ServiceAdCreateForm = () => {
   )
 }
 
-export default ServiceAdCreateForm
+export default OtherAdCreateForm

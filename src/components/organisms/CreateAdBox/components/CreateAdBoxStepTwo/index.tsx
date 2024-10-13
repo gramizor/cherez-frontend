@@ -7,14 +7,14 @@ import { getCategoryAdCreateForm } from '@/src/redux/selectors/adCreate'
 import { CategoriesType } from '@/src/enums/categories'
 import ServiceAdCreateForm from '@/src/components/forms/adCreate/ServiceAdCreateForm'
 import VehicleAdCreateForm from '@/src/components/forms/adCreate/VehicleAdCreateForm'
-import SparePartsAdCreateForm from '@/src/components/forms/adCreate/SparePartsAdCreateForm'
 import RealEstateAdCreateForm from '@/src/components/forms/adCreate/RealEstateAdCreateForm'
 import DevicesAdCreateForm from '@/src/components/forms/adCreate/DevicesAdCreateForm'
 import HouseholdAdCreateForm from '@/src/components/forms/adCreate/HouseholdAdCreateForm'
-import AnimalsAdCreateForm from '@/src/components/forms/adCreate/AnimalsAdCreateForm'
 import PersonalItemsAdCreateForm from '@/src/components/forms/adCreate/PersonalItemsAdCreateForm'
 import JobsAdCreateForm from '@/src/components/forms/adCreate/JobsAdCreateForm'
 import HealthItemsAdCreateForm from '@/src/components/forms/adCreate/HealthItemsAdCreateForm'
+import SparePartsAdCreateForm from '@/src/components/forms/adCreate/SparePartsAdCreateForm'
+import AnimalsAdCreateForm from '@/src/components/forms/adCreate/AnimalsAdCreateForm'
 import OtherAdCreateForm from '@/src/components/forms/adCreate/OtherAdCreateForm'
 
 type Props = {
@@ -22,17 +22,17 @@ type Props = {
 }
 
 const forms = {
-  [CategoriesType.Services]: <ServiceAdCreateForm />,
-  [CategoriesType.Vehicle]: <VehicleAdCreateForm />,
-  [CategoriesType.RealEstate]: <RealEstateAdCreateForm />,
-  [CategoriesType.Devices]: <DevicesAdCreateForm />,
-  [CategoriesType.Household]: <HouseholdAdCreateForm />,
-  [CategoriesType.PersonalItems]: <PersonalItemsAdCreateForm />,
-  [CategoriesType.Jobs]: <JobsAdCreateForm />,
-  [CategoriesType.HealthItems]: <HealthItemsAdCreateForm />,
-  [CategoriesType.SpareParts]: <SparePartsAdCreateForm />,
-  [CategoriesType.Animals]: <AnimalsAdCreateForm />,
-  [CategoriesType.Other]: <OtherAdCreateForm />,
+  [CategoriesType.Services]: <ServiceAdCreateForm categoryName={CategoriesType.Services} />,
+  [CategoriesType.Vehicle]: <VehicleAdCreateForm categoryName={CategoriesType.Vehicle} />,
+  [CategoriesType.RealEstate]: <RealEstateAdCreateForm categoryName={CategoriesType.RealEstate} />,
+  [CategoriesType.Devices]: <DevicesAdCreateForm categoryName={CategoriesType.Devices} />,
+  [CategoriesType.Household]: <HouseholdAdCreateForm categoryName={CategoriesType.Household} />,
+  [CategoriesType.PersonalItems]: <PersonalItemsAdCreateForm categoryName={CategoriesType.PersonalItems} />,
+  [CategoriesType.Jobs]: <JobsAdCreateForm categoryName={CategoriesType.Jobs} />,
+  [CategoriesType.HealthItems]: <HealthItemsAdCreateForm categoryName={CategoriesType.HealthItems} />,
+  [CategoriesType.SpareParts]: <SparePartsAdCreateForm categoryName={CategoriesType.SpareParts} />,
+  [CategoriesType.Animals]: <AnimalsAdCreateForm categoryName={CategoriesType.Animals} />,
+  [CategoriesType.Other]: <OtherAdCreateForm categoryName={CategoriesType.Other} />,
 }
 
 const CreateAdBoxStepTwo = ({ setStep }: Props) => {

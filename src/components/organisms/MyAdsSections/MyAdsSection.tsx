@@ -19,6 +19,7 @@ import { enableAdBoostRequested, setAdLargeRequested } from '@/src/redux/slices/
 import { palette } from '@/src/theme/palette'
 import { DeleteCompanyProfile } from '@/src/types/redux/pro'
 import { useRouter } from 'next/router'
+import { showErrorMessage } from '@/src/utils/useNotification'
 
 const MyAdsSection = () => {
   const dispatch = useDispatch()
@@ -77,6 +78,10 @@ const MyAdsSection = () => {
     dispatch(setAdPublicRequested({ adId, isPublic, type: 'common' }))
   }
 
+  const handleSettings = (adId: string) => {
+    router.push(`/ads/edit/${adId}`).catch(error => showErrorMessage(error))
+  }
+
   return (
     <Box position="relative">
       <LoadingCircular isLoading={isLoading} />
@@ -96,9 +101,7 @@ const MyAdsSection = () => {
             handleDeleteAd={() => handleDeleteAd(ad.objectId)}
             handleXL={() => handleXL(ad.objectId)}
             handleBoost={() => handleBoost(ad.objectId)}
-            handleSettings={function (): void {
-              console.error('Function not implemented.')
-            }}
+            handleSettings={() => handleSettings(ad.objectId)}
           />
         ))
       ) : (

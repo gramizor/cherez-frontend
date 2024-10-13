@@ -19,28 +19,6 @@ const createAd = (payload: CreateAdForm) => {
   })
 }
 
-const loadImages = async (files: string[], images: File[], objectId: string, token: string) => {
-  await Promise.all(
-    images.map(image =>
-      axios
-        .create({
-          baseURL: process.env.API_SERVER_URL,
-          headers: {
-            Accept: 'application/json',
-            'X-Parse-Application-Id': process.env.APP_ID,
-            'Content-Type': image.type,
-            'X-Parse-Session-Token': token,
-          },
-        })
-        .post(`files/${objectId}_adImage`, image)
-        .then(res => {
-          files.push(res.data.url)
-        })
-        .catch(error => console.log('error', error))
-    )
-  )
-}
-
 const saveServicesAd = async (payload: SaveAdForm, files: string[]) => {
   const { objectId, country, city, categoryInfo, price, label, currencyCode, asDraft, description } = payload
 
@@ -262,6 +240,32 @@ const saveOtherAd = async (payload: SaveAdForm, files: string[]) => {
     city,
     images: files,
   })
+}
+
+const loadImages = async (files: string[], images: (File | string)[], objectId: string, token: string) => {
+  await Promise.all(
+    images.map(image => {
+      if (typeof image === 'string') {
+        files.push(image)
+      } else {
+        return axios
+          .create({
+            baseURL: process.env.API_SERVER_URL,
+            headers: {
+              Accept: 'application/json',
+              'X-Parse-Application-Id': process.env.APP_ID,
+              'Content-Type': image.type,
+              'X-Parse-Session-Token': token,
+            },
+          })
+          .post(`files/${objectId}_adImage`, image)
+          .then(res => {
+            files.push(res.data.url)
+          })
+          .catch(error => console.log('error', error))
+      }
+    })
+  )
 }
 
 const saveAd = async (payload: SaveAdForm, token: string) => {

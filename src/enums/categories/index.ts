@@ -39,7 +39,7 @@ export enum CategoryInfoJobsEnum {
 
 export enum JobsSubcategories {
   Hiring = 'HIRING',
-  Search = 'SEARCH',
+  Search = 'SEARCHING',
 }
 
 // spare parts

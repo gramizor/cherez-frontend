@@ -1,9 +1,8 @@
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useTranslation } from 'next-i18next'
-import { CreateAdForm } from '@/src/types/redux/adCreate'
+import { adCreateFormProps, CreateAdForm } from '@/src/types/redux/adCreate'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAdCreateForm } from '@/src/redux/selectors/adCreate'
 import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { getAllCurrenciesFilters } from '@/src/redux/selectors/filters'
 import SimpleTextField, { SimpleTextFieldMaxWidth } from '@/src/components/fields/SimpleTextField'
@@ -13,67 +12,114 @@ import { CategoriesType, KeysSubcategories } from '@/src/enums/categories'
 import SimpleParamsField from '@/src/components/fields/SimpleParamsField'
 import SimpleLocationField from '@/src/components/fields/SimpleLocationField'
 import Button from '@mui/material/Button'
-import { createAdRequested } from '@/src/redux/slices/adCreate'
+import { createAdRequested, saveAdRequested } from '@/src/redux/slices/adCreate'
 import { useRouter } from 'next/router'
 import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
 import SimpleFileUploader from '@/src/components/fields/SimpleFileUploader'
 
-const VehicleAdCreateForm = () => {
+const VehicleAdCreateForm: React.FC<adCreateFormProps> = ({ currentInitialValues, categoryName, objectId }) => {
   const { t } = useTranslation(['common', 'forms'])
   const dispatch = useDispatch()
   const theme = useTheme()
   const { palette } = theme
   const router = useRouter()
 
-  const form = useSelector(getAdCreateForm)
   const allCurrencies = useSelector(getAllCurrenciesFilters)
 
   const vehicle = subcategories[CategoriesType.Vehicle]
 
-  const initialValues: CreateAdForm = form
+  const initialValues: CreateAdForm = {
+    category: categoryName || '',
+    label: currentInitialValues?.label || '',
+    currencyCode: currentInitialValues?.currencyCode || 'USD',
+    price: currentInitialValues?.price || 0,
+    country: currentInitialValues?.country || '',
+    city: currentInitialValues?.city || '',
+    description: currentInitialValues?.description || '',
+    asDraft: currentInitialValues?.draft || false,
+    images: currentInitialValues?.images || [],
+    categoryInfo: {
+      [vehicle.key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'vehicleType' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.vehicleType
+          : vehicle.array[0],
+      [vehicle.additional[0].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'offerType' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.offerType
+          : vehicle.additional[0].array[0],
+      [KeysSubcategories.Brand]:
+        currentInitialValues?.categoryInfo && 'brand' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.brand
+          : '',
+      [KeysSubcategories.Model]:
+        currentInitialValues?.categoryInfo && 'model' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.model
+          : '',
+      [KeysSubcategories.ReleaseYear]:
+        currentInitialValues?.categoryInfo && 'releaseYear' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.releaseYear
+          : 2024,
+      [KeysSubcategories.Mileage]:
+        currentInitialValues?.categoryInfo && 'mileage' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.mileage
+          : 0,
+      [vehicle.additional[1].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'mileageMeasure' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.mileageMeasure
+          : vehicle.additional[1].array[0],
+      [vehicle.additional[2].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'condition' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.condition
+          : vehicle.additional[2].array[0],
+      [vehicle.additional[3].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'transmissionType' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.transmissionType
+          : vehicle.additional[3].array[0],
+      [vehicle.additional[4].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'fuelType' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.fuelType
+          : vehicle.additional[4].array[0],
+      [vehicle.additional[5].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'quality' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.quality
+          : vehicle.additional[5].array[0],
+      [vehicle.additional[6].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'color' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.color
+          : vehicle.additional[6].array[0],
+    },
+  }
 
   const validationSchema = yup.object({})
 
   const onSubmit = (values: CreateAdForm) => {
     const onFailed = (error: Renderable | ValueFunction<Renderable, Toast>) => {
       if (typeof error === 'string') {
-        toast.error(t(`forms:${error.replace(/ /g, '_')}`), {
-          duration: 3000,
-        })
+        toast.error(t(`forms:${error.replace(/ /g, '_')}`), { duration: 3000 })
       }
     }
+    if (currentInitialValues) {
+      const onSuccess = () => {
+        toast.success(t('forms:ad_updated'))
+        router.push(`/announcements`)
+      }
+      dispatch(saveAdRequested({ ...values, category: categoryName, objectId, onSuccess, onFailed }))
+    } else {
+      const redirectToAdPage = (objectId: string) => {
+        router.push(`/ads/${objectId}`).then()
+      }
 
-    const redirectToAdPage = (objectId: string) => {
-      router.push(`/ads/${objectId}`).then()
+      const onSuccess = (objectId: string) => {
+        redirectToAdPage(objectId)
+      }
+
+      dispatch(createAdRequested({ ...values, onSuccess, onFailed }))
     }
-
-    // const onSuccess = (objectId: string) => {
-    //   if (values.asDraft) redirectToAdPage(objectId)
-    //   else dispatch(saveVehicleAdRequested({ ...values, onSuccess: redirectToAdPage, onFailed, objectId }))
-    // }
-
-    dispatch(createAdRequested({ ...values, onSuccess: redirectToAdPage, onFailed }))
   }
 
   const formik = useFormik({
     validationSchema,
-    initialValues: {
-      ...initialValues,
-      categoryInfo: {
-        [vehicle.key as KeysSubcategories]: vehicle.array[0],
-        [vehicle.additional[0].key as KeysSubcategories]: vehicle.additional[0].array[0],
-        [KeysSubcategories.Brand]: '',
-        [KeysSubcategories.Model]: '',
-        [KeysSubcategories.ReleaseYear]: 2024,
-        [KeysSubcategories.Mileage]: 0,
-        [vehicle.additional[1].key as KeysSubcategories]: vehicle.additional[1].array[0],
-        [vehicle.additional[2].key as KeysSubcategories]: vehicle.additional[2].array[0],
-        [vehicle.additional[3].key as KeysSubcategories]: vehicle.additional[3].array[0],
-        [vehicle.additional[4].key as KeysSubcategories]: vehicle.additional[4].array[0],
-        [vehicle.additional[5].key as KeysSubcategories]: vehicle.additional[5].array[0],
-        [vehicle.additional[6].key as KeysSubcategories]: vehicle.additional[6].array[0],
-      },
-    },
+    initialValues,
     onSubmit,
   })
 
@@ -229,7 +275,7 @@ const VehicleAdCreateForm = () => {
                 handleChange={e =>
                   formik.setFieldValue(
                     'categoryInfo',
-                    { ...formik.values.categoryInfo, [KeysSubcategories.Mileage]: e.target.value },
+                    { ...formik.values.categoryInfo, [KeysSubcategories.Mileage]: Number(e.target.value) },
                     false
                   )
                 }
@@ -363,7 +409,7 @@ const VehicleAdCreateForm = () => {
                   formik.setFieldValue('asDraft', false, false).then(() => formik.handleSubmit())
                 }}
               >
-                {t('forms:save_ad')}
+                {currentInitialValues ? t('forms:edit_ad') : t('forms:save_ad')}
               </Button>
             </Grid>
           </Grid>

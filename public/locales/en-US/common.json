@@ -62,5 +62,6 @@
   "delete": "Delete",
   "draft": "Draft",
   "done_pro": "Completed",
-  "days_until": "Days until deletion"
+  "days_until": "Days until deletion",
+  "save": "Save"
 }

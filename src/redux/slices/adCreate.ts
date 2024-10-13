@@ -44,13 +44,10 @@ const slice = createSlice({
       state.error = action.payload.error
       state.loading = false
     },
-    saveServicesAdRequested: (state, action) => {
+    saveAdRequested: (state, action) => {
       state.loading = true
     },
-    saveVehicleAdRequested: (state, action) => {
-      state.loading = true
-    },
-    saveAdSucceed: (state, action) => {
+    saveAdSucceed: state => {
       state.loading = false
       state.error = null
     },
@@ -67,10 +64,9 @@ export const {
   createAdSucceed,
   createAdRequested,
   createAdFailed,
-  saveServicesAdRequested,
+  saveAdRequested,
   saveAdSucceed,
   saveAdFailed,
-  saveVehicleAdRequested,
 } = slice.actions
 
 export default slice.reducer

@@ -14,7 +14,6 @@ type Props = {
 
 const OwnerRatings = ({ user, withAdsCount = true, withCompanyInfo = false, logoUrl }: Props) => {
   const { palette } = useTheme()
-  console.log('user', user)
   const {
     t,
     i18n: { language },

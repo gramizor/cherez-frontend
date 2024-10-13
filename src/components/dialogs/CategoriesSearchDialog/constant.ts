@@ -209,7 +209,7 @@ const subcategories: CategoriesSearch = {
   },
   [CategoriesType.Jobs]: {
     key: KeysSubcategories.AdType,
-    array: [JobsSubcategories.Hiring, JobsSubcategories.Search],
+    array: [JobsSubcategories.Search, JobsSubcategories.Hiring],
     checkAdditional: false,
     additional: [],
   },

@@ -10,7 +10,7 @@ type Props = {
   label?: string
   handleChange: (item: CategorySearch | AdditionalParamSearch) => void
   collection: CategorySearch[] | AdditionalParamSearch[]
-  selected: CreateAdCategoryInfo[KeysSubcategories]
+  selected: CreateAdCategoryInfo[KeysSubcategories] | []
   prefix?: string
 }
 

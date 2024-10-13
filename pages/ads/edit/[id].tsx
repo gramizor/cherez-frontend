@@ -1,8 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import CreateAdPageWrapper from '@/src/components/wrappers/CreateAdPageWrapper'
+import EditAdPageWrapper from '@/src/components/wrappers/EditAdPageWrapper/EditAdPageWrapper'
 
 export default function CreateAd() {
-  return <CreateAdPageWrapper />
+  return <EditAdPageWrapper />
 }
 
 export async function getServerSideProps({ locale }: any) {

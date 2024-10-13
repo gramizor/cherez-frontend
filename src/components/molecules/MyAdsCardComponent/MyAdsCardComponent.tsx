@@ -19,7 +19,7 @@ interface MyAdsCardComponentProps {
   handleDeleteAd: (adId: string) => void
   handleXL: (adId: string) => void
   handleBoost: (adId: string) => void
-  handleSettings: () => void
+  handleSettings: (adId: string) => void
 }
 
 const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({

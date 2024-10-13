@@ -106,6 +106,10 @@ const MyProAdsSection = () => {
     dispatch(setAdPublicRequested({ adId, isPublic, type: 'pro' }))
   }
 
+  const handleSettings = (adId: string) => {
+    router.push(`/ads/edit/${adId}`).catch(error => showErrorMessage(error))
+  }
+
   return (
     <Box position="relative">
       <LoadingCircular isLoading={isLoading || loadingHandler} />
@@ -136,9 +140,7 @@ const MyProAdsSection = () => {
               handleDeleteAd={() => handleDeleteAd(ad.objectId)}
               handleXL={() => handleXL(ad.objectId)}
               handleBoost={() => handleBoost(ad.objectId)}
-              handleSettings={function (): void {
-                console.error('Function not implemented.')
-              }}
+              handleSettings={() => handleSettings(ad.objectId)}
             />
           ))}
           {myProAds.length < total && (

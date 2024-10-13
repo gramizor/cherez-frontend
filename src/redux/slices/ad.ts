@@ -15,6 +15,9 @@ const slice = createSlice({
   name: 'ad',
   initialState,
   reducers: {
+    clearCurrentAd: state => {
+      state.currentAd = null
+    },
     getAdRequested: (state, action) => {
       state.loading = true
     },
@@ -63,6 +66,7 @@ const slice = createSlice({
 })
 
 export const {
+  clearCurrentAd,
   getAdRequested,
   getAdFailed,
   getAdSucceed,

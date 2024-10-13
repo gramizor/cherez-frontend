@@ -1,69 +1,89 @@
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useTranslation } from 'next-i18next'
-import { CreateAdForm } from '@/src/types/redux/adCreate'
+import { adCreateFormProps, CreateAdForm } from '@/src/types/redux/adCreate'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAdCreateForm } from '@/src/redux/selectors/adCreate'
 import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { getAllCurrenciesFilters } from '@/src/redux/selectors/filters'
-import SimpleTextField, { SimpleTextFieldMaxWidth } from '@/src/components/fields/SimpleTextField'
+import SimpleTextField from '@/src/components/fields/SimpleTextField'
 import SimpleSelectField from '@/src/components/fields/SimpleSelectField'
 import { subcategories } from '@/src/components/dialogs/CategoriesSearchDialog/constant'
 import { CategoriesType, KeysSubcategories } from '@/src/enums/categories'
 import SimpleParamsField from '@/src/components/fields/SimpleParamsField'
 import SimpleLocationField from '@/src/components/fields/SimpleLocationField'
 import Button from '@mui/material/Button'
-import { createAdRequested } from '@/src/redux/slices/adCreate'
+import { createAdRequested, saveAdRequested } from '@/src/redux/slices/adCreate'
 import { useRouter } from 'next/router'
 import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
 import SimpleFileUploader from '@/src/components/fields/SimpleFileUploader'
 
-const DevicesAdCreateForm = () => {
+const HealthItemsAdCreateForm: React.FC<adCreateFormProps> = ({ currentInitialValues, categoryName, objectId }) => {
   const { t } = useTranslation(['common', 'forms'])
   const dispatch = useDispatch()
   const theme = useTheme()
   const { palette } = theme
   const router = useRouter()
 
-  const form = useSelector(getAdCreateForm)
   const allCurrencies = useSelector(getAllCurrenciesFilters)
 
-  const devices = subcategories[CategoriesType.Devices]
+  const healthItems = subcategories[CategoriesType.HealthItems]
 
-  const initialValues: CreateAdForm = form
+  const initialValues: CreateAdForm = {
+    category: categoryName || '',
+    label: currentInitialValues?.label || '',
+    currencyCode: currentInitialValues?.currencyCode || 'USD',
+    price: currentInitialValues?.price || 0,
+    country: currentInitialValues?.country || '',
+    city: currentInitialValues?.city || '',
+    description: currentInitialValues?.description || '',
+    asDraft: currentInitialValues?.draft || false,
+    images: currentInitialValues?.images || [],
+    categoryInfo: {
+      [healthItems.key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'subcategory' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.subcategory
+          : healthItems.array[0],
+      [healthItems.additional[0].key as KeysSubcategories]:
+        currentInitialValues?.categoryInfo && 'adType' in currentInitialValues.categoryInfo
+          ? currentInitialValues.categoryInfo.adType
+          : healthItems.additional[0].array[0],
+    },
+  }
 
   const validationSchema = yup.object({})
 
   const onSubmit = (values: CreateAdForm) => {
     const onFailed = (error: Renderable | ValueFunction<Renderable, Toast>) => {
       if (typeof error === 'string') {
-        toast.error(t(`forms:${error.replace(/ /g, '_')}`), {
-          duration: 3000,
-        })
+        toast.error(t(`forms:${error.replace(/ /g, '_')}`), { duration: 3000 })
       }
     }
+    if (currentInitialValues) {
+      const onSuccess = () => {
+        toast.success(t('forms:ad_updated'))
+        router.push(`/announcements`)
+      }
+      dispatch(saveAdRequested({ ...values, category: categoryName, objectId, onSuccess, onFailed }))
+    } else {
+      const redirectToAdPage = (objectId: string) => {
+        router.push(`/ads/${objectId}`).then()
+      }
 
-    const onSuccess = (objectId: string) => {
-      router.push(`/ads/${objectId}`).then()
+      const onSuccess = (objectId: string) => {
+        redirectToAdPage(objectId)
+      }
+
+      dispatch(createAdRequested({ ...values, onSuccess, onFailed }))
     }
-
-    dispatch(createAdRequested({ ...values, onSuccess, onFailed }))
   }
 
   const formik = useFormik({
     validationSchema,
-    initialValues: {
-      ...initialValues,
-      categoryInfo: {
-        [KeysSubcategories.Brand]: '',
-        [devices.key as KeysSubcategories]: devices.array[0],
-        [devices.additional[0].key as KeysSubcategories]: devices.additional[0].array[0],
-      },
-    },
+    initialValues,
     onSubmit,
   })
 
-  if (!devices) return null
+  if (!healthItems) return null
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container>
@@ -122,27 +142,12 @@ const DevicesAdCreateForm = () => {
             handleChange={item =>
               formik.setFieldValue(
                 'categoryInfo',
-                { ...formik.values.categoryInfo, [devices.additional[0].key as string]: item },
+                { ...formik.values.categoryInfo, [healthItems.additional[0].key as string]: item },
                 true
               )
             }
-            collection={devices.additional[0].array}
-            selected={formik.values.categoryInfo[devices.additional[0].key as KeysSubcategories]}
-          />
-        </Grid>
-
-        <Grid item xs={12} mt={{ xs: 6, md: 10 }}>
-          <SimpleTextField
-            maxWidth={SimpleTextFieldMaxWidth.Medium}
-            value={formik.values.categoryInfo[KeysSubcategories.Brand] as string | number}
-            label={t('forms:brand_name_for_device')}
-            handleChange={e =>
-              formik.setFieldValue(
-                'categoryInfo',
-                { ...formik.values.categoryInfo, [KeysSubcategories.Brand]: e.target.value },
-                false
-              )
-            }
+            collection={healthItems.additional[0].array}
+            selected={formik.values.categoryInfo[healthItems.additional[0].key as KeysSubcategories]}
           />
         </Grid>
 
@@ -151,12 +156,12 @@ const DevicesAdCreateForm = () => {
             handleChange={item =>
               formik.setFieldValue(
                 'categoryInfo',
-                { ...formik.values.categoryInfo, [devices.key as string]: item },
+                { ...formik.values.categoryInfo, [healthItems.key as string]: item },
                 true
               )
             }
-            collection={devices.array}
-            selected={formik.values.categoryInfo[devices.key as KeysSubcategories]}
+            collection={healthItems.array}
+            selected={formik.values.categoryInfo[healthItems.key as KeysSubcategories]}
           />
         </Grid>
 
@@ -212,7 +217,7 @@ const DevicesAdCreateForm = () => {
                   formik.setFieldValue('asDraft', false, false).then(() => formik.handleSubmit())
                 }}
               >
-                {t('forms:save_ad')}
+                {currentInitialValues ? t('forms:edit_ad') : t('forms:save_ad')}
               </Button>
             </Grid>
           </Grid>
@@ -222,4 +227,4 @@ const DevicesAdCreateForm = () => {
   )
 }
 
-export default DevicesAdCreateForm
+export default HealthItemsAdCreateForm

@@ -1,4 +1,5 @@
 import { CategoriesType, KeysSubcategories } from '@/src/enums/categories'
+import { AdsState } from '../../models'
 
 export type CreateAdCategoryInfo = {
   [KeysSubcategories.Subcategory]?: string
@@ -38,7 +39,7 @@ export type CreateAdForm = {
   city: string
   description: string
   asDraft: boolean
-  images: File[]
+  images: File[] | string[]
 }
 
 export interface SaveAdForm extends CreateAdForm {
@@ -50,4 +51,10 @@ export interface AdCreateState {
   objectId: string | null
   loading: boolean
   error: string | null
+}
+
+export interface adCreateFormProps {
+  currentInitialValues?: AdsState
+  categoryName?: CategoriesType
+  objectId?: string
 }
