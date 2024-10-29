@@ -8,7 +8,7 @@ export default function CreateAd() {
 export async function getServerSideProps({ locale }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'forms', 'countries', 'categories', 'ad'])),
+      ...(await serverSideTranslations(locale, ['common', 'forms', 'countries', 'categories', 'ad', 'notifications'])),
     },
   }
 }

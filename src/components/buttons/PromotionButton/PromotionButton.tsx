@@ -36,7 +36,14 @@ const PromotionButton: React.FC<PromotionButtonProps> = ({ variant, handleClick,
   }, [variant, isActive])
 
   return (
-    <IconButton sx={{ padding: 0, borderRadius: '10px' }} disabled={isActive} onClick={handleClick}>
+    <IconButton
+      sx={{ padding: 0, borderRadius: '10px' }}
+      disabled={isActive}
+      onClick={event => {
+        event.stopPropagation()
+        handleClick()
+      }}
+    >
       <Image width={60} height={30} src={imageDisplay(variant)} alt={variant} />
     </IconButton>
   )

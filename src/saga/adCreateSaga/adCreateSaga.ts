@@ -5,37 +5,28 @@ import { CreateAdForm, SaveAdForm } from '@/src/types/redux/adCreate'
 import {
   createAdFailed,
   createAdRequested,
+  createAdSucceed,
   saveAdFailed,
   saveAdRequested,
   saveAdSucceed,
 } from '@/src/redux/slices/adCreate'
 import runPayloadOption from '@/src/utils/runPayloadOption'
+import { CategoriesType } from '@/src/enums/categories'
 
-function* create(action: PayloadAction<CreateAdForm>) {
+function* create(action: PayloadAction<{ category: CategoriesType; successCallback?: (id: string) => void }>) {
   try {
+    const { category, successCallback } = action.payload
     const {
       data: { result },
-    } = yield call(createAd, action.payload)
-    const {
-      objectId,
-    }: {
-      objectId: string
-    } = result
+    } = yield call(createAd, { category })
 
-    const getToken = (state: {
-      auth: {
-        currentUser: {
-          sessionToken: string
-        }
-      }
-    }) => state.auth.currentUser.sessionToken
-    const token: string = yield select(getToken)
+    yield put(createAdSucceed(result))
 
-    yield call(saveAd, { ...action.payload, objectId }, token)
-    runPayloadOption(action, 'onSuccess', objectId)
+    if (result.objectId && successCallback) {
+      successCallback(result.objectId)
+    }
   } catch (error: any) {
-    yield put(createAdFailed(error.response.data.error))
-    runPayloadOption(action, 'onFailed', error.response.data.error)
+    yield put(createAdFailed(error.response.data))
   }
 }
 

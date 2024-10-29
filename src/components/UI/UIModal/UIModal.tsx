@@ -34,6 +34,7 @@ const UIModal: React.FC<UIModalProps> = ({ open, onClose, triggerButton, childre
             flexDirection: 'column',
             ...modalStyle,
           }}
+          onClick={event => event.stopPropagation()}
         >
           <Typography variant="h2" color={palette.customColors.greyInfo} textAlign="center">
             {header}

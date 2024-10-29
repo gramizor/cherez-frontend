@@ -28,7 +28,6 @@ const MyAdsSection = () => {
   const isLoading = useSelector((state: RootState) => state.myAds.loading)
   const myCommonAds = useSelector((state: RootState) => state.myAds.myAds)
 
-  const [selectedId, setSelectedId] = useState<DeleteCompanyProfile | null>(null)
   const isActive = myCommonAds.every((ad: AdsState) => ad.public)
 
   useEffect(() => {

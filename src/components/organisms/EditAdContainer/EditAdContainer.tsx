@@ -21,6 +21,9 @@ import SparePartsAdCreateForm from '@/src/components/forms/adCreate/SparePartsAd
 import AnimalsAdCreateForm from '@/src/components/forms/adCreate/AnimalsAdCreateForm'
 import OtherAdCreateForm from '@/src/components/forms/adCreate/OtherAdCreateForm'
 import { palette } from '@/src/theme/palette'
+import { CreateAdForm } from '@/src/types/redux/adCreate'
+import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
+import { saveAdRequested } from '@/src/redux/slices/adCreate'
 
 const forms = {
   [CategoriesType.Services]: <ServiceAdCreateForm />,
@@ -69,6 +72,27 @@ const EditAdContainer = () => {
     }
   }
 
+  const onSubmit = (values: CreateAdForm) => {
+    const onFailed = (error: Renderable | ValueFunction<Renderable, Toast>) => {
+      if (typeof error === 'string') {
+        toast.error(t(`forms:${error.replace(/ /g, '_')}`), { duration: 3000 })
+      }
+    }
+    const onSuccess = () => {
+      toast.success(t('notifications:success'))
+      router.push(`/announcements`)
+    }
+    dispatch(
+      saveAdRequested({
+        ...values,
+        category: currentAd?.categoryName,
+        objectId: currentAd?.objectId,
+        onSuccess,
+        onFailed,
+      })
+    )
+  }
+
   return (
     <Box mt={{ xs: 6, md: 11 }} mb={20} sx={{ '& fieldset': { borderWidth: 0 } }}>
       {(isLoading || editLoading) && !currentAd ? (
@@ -88,6 +112,7 @@ const EditAdContainer = () => {
                 currentInitialValues: getInitialValues(currentAd),
                 categoryName: currentAd.categoryName,
                 objectId: id,
+                submitHandler: onSubmit,
               })}
           </Box>
         )

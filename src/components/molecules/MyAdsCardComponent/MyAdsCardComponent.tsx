@@ -11,6 +11,7 @@ import { palette } from '@/src/theme/palette'
 import RadioSliderButton from '../../buttons/RadioSliderButton/RadioSliderButton'
 import { useDispatch } from 'react-redux'
 import { AdsState } from '@/src/types/models'
+import { useRouter } from 'next/router'
 
 interface MyAdsCardComponentProps {
   ad: myProAd | AdsState
@@ -32,6 +33,7 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
   handleSettings,
 }) => {
   const { t } = useTranslation(['myAds', 'common', 'categories'])
+  const router = useRouter()
 
   const [isPublic, setIsPublic] = useState(ad.public)
   const imagePro = getSingleImage(ad.images) || noPhoto
@@ -55,10 +57,17 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
         p: 2,
         py: 5,
         borderBottom: `1px solid ${palette.black}`,
+        cursor: 'pointer',
       }}
       width="100%"
       flexDirection="column"
       flex="1"
+      onClick={event => {
+        const target = event.target as HTMLElement
+        if (!target.closest('#slider') && !target.classList.contains('MuiBackdrop-root')) {
+          router.push(`/ads/${ad.objectId}`)
+        }
+      }}
     >
       <Stack direction="row" flex="1" justifyContent="space-between" alignItems="center" mb={1}>
         <Typography my={2} color={palette.customColors.bodyInfo}>
@@ -92,8 +101,12 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
                 {ad.price} {ad.currencyCode}
               </Typography>
               <RadioSliderButton
+                id="slider"
                 checked={isPublic}
-                onChange={handleTogglePublicStatus}
+                onChange={event => {
+                  event.stopPropagation()
+                  handleTogglePublicStatus()
+                }}
                 sx={{ position: 'absolute', top: -10, right: 0 }}
               />
             </Stack>
@@ -102,7 +115,13 @@ const MyAdsCardComponent: React.FC<MyAdsCardComponentProps> = ({
                 {ad.label}
               </Typography>
               {daysUntil < 0 ? (
-                <Button onClick={() => handleExtend(ad.objectId)} sx={{ padding: 0 }}>
+                <Button
+                  onClick={event => {
+                    event.stopPropagation()
+                    handleExtend(ad.objectId)
+                  }}
+                  sx={{ padding: 0 }}
+                >
                   <Typography fontWeight="bold" color={palette.primary.light}>
                     {t('extend')}
                   </Typography>

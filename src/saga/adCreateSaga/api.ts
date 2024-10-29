@@ -3,19 +3,11 @@ import { CreateAdForm, SaveAdForm } from '@/src/types/redux/adCreate'
 import axios from 'axios'
 import { CategoriesType, KeysSubcategories } from '@/src/enums/categories'
 
-const createAd = (payload: CreateAdForm) => {
-  const { country, city, categoryInfo, category, price, label, currencyCode, asDraft, description } = payload
+const createAd = (payload: { category: CategoriesType }) => {
+  const { category } = payload
   const path = 'functions/createAd'
   return axiosClient.post(path, {
-    country,
-    city,
-    categoryInfo,
     categoryName: category,
-    price,
-    label,
-    currencyCode,
-    asDraft,
-    description,
   })
 }
 

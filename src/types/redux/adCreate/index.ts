@@ -1,5 +1,6 @@
 import { CategoriesType, KeysSubcategories } from '@/src/enums/categories'
 import { AdsState } from '../../models'
+import { FormikHelpers } from 'formik'
 
 export type CreateAdCategoryInfo = {
   [KeysSubcategories.Subcategory]?: string
@@ -42,10 +43,6 @@ export type CreateAdForm = {
   images: File[] | string[]
 }
 
-export interface SaveAdForm extends CreateAdForm {
-  objectId: string | null
-}
-
 export interface AdCreateState {
   form: CreateAdForm
   objectId: string | null
@@ -57,4 +54,9 @@ export interface adCreateFormProps {
   currentInitialValues?: AdsState
   categoryName?: CategoriesType
   objectId?: string
+  submitHandler?: (values: SaveAdForm, formikHelpers: FormikHelpers<SaveAdForm>) => void | Promise<any>
+}
+
+export interface SaveAdForm extends CreateAdForm {
+  objectId: string | null
 }

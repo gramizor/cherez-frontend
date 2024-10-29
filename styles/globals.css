@@ -84,3 +84,7 @@ a {
   -ms-user-select: none;
   user-select: none;
 }
+
+.MuiTextField-root {
+  overflow: hidden !important;
+}

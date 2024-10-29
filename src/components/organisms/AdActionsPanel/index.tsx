@@ -12,13 +12,17 @@ import { useEffect, useState } from 'react'
 import { getSavedAds, setSavedAds } from '@/src/lib/storage'
 import sendImage from '@/src/assets/images/ads/send.png'
 import { startChatByAdRequested } from '@/src/redux/slices/ad'
+import { useRouter } from 'next/router'
+import { getCurrentUser } from '@/src/redux/selectors/auth'
 
 const AdActionsPanel = () => {
   const currentAd = useSelector(getCurrentAd)
+  const currentUser = useSelector(getCurrentUser)
   const { palette } = useTheme()
   const [isSaved, setIsSaved] = useState(false)
   const [firstMessageText, setFirstMessageText] = useState('')
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const {
     t,
@@ -31,6 +35,10 @@ const AdActionsPanel = () => {
       setIsSaved(savedAdsCollection && savedAdsCollection.includes(currentAd.objectId))
     }
   }, [currentAd])
+
+  const handleEdit = (adId: string) => {
+    router.push(`/ads/edit/${adId}`)
+  }
 
   if (!currentAd) return null
 
@@ -80,6 +88,23 @@ const AdActionsPanel = () => {
           {t(isSaved ? 'ad:saved_ad' : 'ad:save_ad')}
         </Button>
       </Box>
+      {currentAd.owner.objectId === currentUser?.objectId ? (
+        <Box width="100%" mt={4.5}>
+          <Button
+            variant="contained"
+            onClick={() => handleEdit(currentAd.objectId)}
+            fullWidth
+            sx={{
+              background: palette.primary.light,
+              fontWeight: 400,
+              fontSize: 20,
+              color: palette.info.main,
+            }}
+          >
+            {t('forms:edit_ad')}
+          </Button>
+        </Box>
+      ) : null}
       <Box width="100%" mt={3}>
         <TextField
           fullWidth

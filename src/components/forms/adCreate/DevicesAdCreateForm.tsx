@@ -1,8 +1,8 @@
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useTranslation } from 'next-i18next'
-import { adCreateFormProps, CreateAdForm } from '@/src/types/redux/adCreate'
-import { useDispatch, useSelector } from 'react-redux'
+import { adCreateFormProps, SaveAdForm } from '@/src/types/redux/adCreate'
+import { useSelector } from 'react-redux'
 import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { getAllCurrenciesFilters } from '@/src/redux/selectors/filters'
 import SimpleTextField, { SimpleTextFieldMaxWidth } from '@/src/components/fields/SimpleTextField'
@@ -12,23 +12,23 @@ import { CategoriesType, KeysSubcategories } from '@/src/enums/categories'
 import SimpleParamsField from '@/src/components/fields/SimpleParamsField'
 import SimpleLocationField from '@/src/components/fields/SimpleLocationField'
 import Button from '@mui/material/Button'
-import { createAdRequested, saveAdRequested } from '@/src/redux/slices/adCreate'
-import { useRouter } from 'next/router'
-import toast, { Renderable, Toast, ValueFunction } from 'react-hot-toast'
 import SimpleFileUploader from '@/src/components/fields/SimpleFileUploader'
 
-const DevicesAdCreateForm: React.FC<adCreateFormProps> = ({ currentInitialValues, categoryName, objectId }) => {
+const DevicesAdCreateForm: React.FC<adCreateFormProps> = ({
+  currentInitialValues,
+  categoryName,
+  objectId,
+  submitHandler,
+}) => {
   const { t } = useTranslation(['common', 'forms'])
-  const dispatch = useDispatch()
   const theme = useTheme()
   const { palette } = theme
-  const router = useRouter()
 
   const allCurrencies = useSelector(getAllCurrenciesFilters)
 
   const devices = subcategories[CategoriesType.Devices]
 
-  const initialValues: CreateAdForm = {
+  const initialValues: SaveAdForm = {
     category: categoryName || '',
     label: currentInitialValues?.label || '',
     currencyCode: currentInitialValues?.currencyCode || 'USD',
@@ -52,39 +52,15 @@ const DevicesAdCreateForm: React.FC<adCreateFormProps> = ({ currentInitialValues
           ? currentInitialValues.categoryInfo.quality
           : devices.additional[0].array[0],
     },
+    objectId: objectId || null,
   }
 
   const validationSchema = yup.object({})
 
-  const onSubmit = (values: CreateAdForm) => {
-    const onFailed = (error: Renderable | ValueFunction<Renderable, Toast>) => {
-      if (typeof error === 'string') {
-        toast.error(t(`forms:${error.replace(/ /g, '_')}`), { duration: 3000 })
-      }
-    }
-    if (currentInitialValues) {
-      const onSuccess = () => {
-        toast.success(t('forms:ad_updated'))
-        router.push(`/announcements`)
-      }
-      dispatch(saveAdRequested({ ...values, category: categoryName, objectId, onSuccess, onFailed }))
-    } else {
-      const redirectToAdPage = (objectId: string) => {
-        router.push(`/ads/${objectId}`).then()
-      }
-
-      const onSuccess = (objectId: string) => {
-        redirectToAdPage(objectId)
-      }
-
-      dispatch(createAdRequested({ ...values, onSuccess, onFailed }))
-    }
-  }
-
   const formik = useFormik({
     validationSchema,
     initialValues,
-    onSubmit,
+    onSubmit: submitHandler || (() => {}),
   })
 
   if (!devices) return null
@@ -120,7 +96,13 @@ const DevicesAdCreateForm: React.FC<adCreateFormProps> = ({ currentInitialValues
                 name={'price'}
                 touched={formik.touched.price}
                 error={formik.errors.price}
-                inputProps={{ type: 'number', min: '0' }}
+                inputProps={{
+                  onKeyDown: e => {
+                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
+                      e.preventDefault()
+                    }
+                  },
+                }}
                 value={formik.values.price}
               />
             </Box>

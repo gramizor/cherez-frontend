@@ -35,10 +35,12 @@ const slice = createSlice({
     },
     createAdRequested: (state, action) => {
       state.loading = true
+      state.error = null
     },
     createAdSucceed: (state, action) => {
       state.loading = false
       state.error = null
+      state.objectId = action.payload.objectId
     },
     createAdFailed: (state, action: PayloadAction<ErrorResponse>) => {
       state.error = action.payload.error
