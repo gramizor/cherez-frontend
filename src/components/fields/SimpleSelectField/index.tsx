@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { ChangeEvent } from 'react'
 
 const flagMap: Record<string, string> = {
-  USD: '',
+  USD: 'flag_us.png',
   THB: 'flag_th.png',
   VND: 'flag_vn.png',
   IDR: 'flag_id.png',
@@ -25,7 +25,7 @@ const flagMap: Record<string, string> = {
   KGS: 'flag_kg.png',
   TMT: 'flag_tm.png',
   TJS: 'flag_tj.png',
-  UAH: '',
+  UAH: 'flag_ua.png',
   UZS: 'flag_uz.png',
 }
 
