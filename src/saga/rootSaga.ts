@@ -9,6 +9,7 @@ import walletSaga from '@/src/saga/walletSaga/walletSaga'
 import promotionSaga from '@/src/saga/promotionSaga/promotionSaga'
 import proSaga from './proSaga/proSaga'
 import myAdsSaga from './myAdsSaga/myAdsSaga'
+import locationSaga from '@/src/saga/locationSaga/locationSaga'
 
 function* rootSaga() {
   yield all([
@@ -21,6 +22,7 @@ function* rootSaga() {
     promotionSaga(),
     proSaga(),
     myAdsSaga(),
+    locationSaga()
   ])
 }
 

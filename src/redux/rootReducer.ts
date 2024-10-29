@@ -10,6 +10,7 @@ import wallet from './slices/wallet'
 import promotion from './slices/promotion'
 import pro from './slices/pro'
 import myAds from './slices/myAds'
+import location from './slices/location'
 
 const combineReducer = combineReducers({
   mainSearch,
@@ -22,6 +23,7 @@ const combineReducer = combineReducers({
   promotion,
   pro,
   myAds,
+  location,
 })
 
 export type RootState = ReturnType<typeof combineReducer>

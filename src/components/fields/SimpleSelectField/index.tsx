@@ -76,7 +76,7 @@ const SimpleSelectField = ({ label, handleChange, name, touched, error, inputPro
                 <Image
                   src={require(`@/public/countries/${flagMap[option]}`)}
                   alt={option}
-                  width={20}
+                  width={28}
                   height={20}
                   style={{ marginRight: 8 }}
                 />

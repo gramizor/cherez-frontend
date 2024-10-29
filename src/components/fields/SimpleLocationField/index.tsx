@@ -1,38 +1,50 @@
 import { Autocomplete, Box, TextField, Typography, useTheme } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { countries } from '@/src/components/dialogs/LocationSearchDialog/constants'
 import { debounce, find } from 'lodash'
-import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { getLocationRequested } from '@/src/redux/slices/location'
 import { useTranslation } from 'next-i18next'
+import { GetCitiesType } from '@/src/types/redux/location'
+import { CountriesType } from '@/src/enums/countries'
+
+type CountryType = { title: string; id: CountriesType }
 
 type Props = {
-  countryValue: string
+  countryValue: CountriesType
   cityValue: string
-  handleCountryChange: (country: string) => void
+  handleCountryChange: (country: CountriesType) => void
   handleCityChange: (city: string) => void
 }
 
 const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, handleCityChange }: Props) => {
   const { palette } = useTheme()
   const { t } = useTranslation(['common', 'forms', 'countries'])
-  const country = find(countries, { id: countryValue }) ?? null
-  const [cities, setCities] = useState([])
+  const [cities, setCities] = useState<string[]>([])
+  const dispatch = useDispatch()
+
+  const country: CountryType | null = find(countries, { id: countryValue }) ?? null
+
   const fetchCities = (value: string) => {
-    const axiosClient = axios.create({
-      baseURL: process.env.API_CITIES_URL,
-    })
     if (country) {
-      axiosClient
-        .get(
-          // @ts-ignore
-          `searchJSON?maxRows=8&featureClass=P&username=${process.env.API_CITIES_USERNAME}&country=${country.id}&q=${value}`
-        )
-        .then(res => {
-          // @ts-ignore
-          setCities(res.data.geonames.map(({ name }) => name))
-        })
+      const payload: GetCitiesType = {
+        country: country.id,
+        searchLine: value,
+        limit: '8',
+        skip: '0',
+        order: '',
+      }
+      dispatch(getLocationRequested(payload))
     }
   }
+
+  useEffect(() => {
+    if (country) {
+      fetchCities('')
+    } else {
+      setCities([])
+    }
+  }, [country])
 
   return (
     <Box>
@@ -53,10 +65,11 @@ const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, han
         options={countries}
         renderInput={params => <TextField {...params} sx={{ maxWidth: { xs: '100%', md: 331 } }} label="" />}
         getOptionLabel={option => t(`countries:${option?.title}`) ?? option?.id}
-        // @ts-ignore
         value={country}
         onChange={(e, inputValue) => {
-          inputValue && handleCountryChange(inputValue.id)
+          if (inputValue) {
+            handleCountryChange(inputValue.id as CountriesType)
+          }
         }}
       />
       <Typography variant="subtitle1" sx={{ mb: 2.5, fontSize: { xs: 16, md: 20 } }}>
@@ -76,7 +89,9 @@ const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, han
         onInputChange={debounce((event, value) => fetchCities(value), 500)}
         value={cityValue}
         onChange={(e, inputValue) => {
-          inputValue && handleCityChange(inputValue)
+          if (inputValue) {
+            handleCityChange(inputValue)
+          }
         }}
       />
     </Box>
