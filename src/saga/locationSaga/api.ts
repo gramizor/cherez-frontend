@@ -1,7 +1,7 @@
-import axios from 'axios'
-import { GetCitiesType } from '@/src/types/redux/location'
+import { GetCitiesType, GetLocationResponseArr } from '@/src/types/redux/location'
+import { axiosClient } from '@/src/lib/axios'
 
-const getCities = (payload: GetCitiesType) => {
+const getCities = (payload: GetCitiesType): Promise<{ results: GetLocationResponseArr[]; hasMore: boolean }> => {
   const { order, limit, skip, country, searchLine } = payload
   const params: any = {
     order,
@@ -9,11 +9,11 @@ const getCities = (payload: GetCitiesType) => {
     skip,
     where: JSON.stringify({
       country,
-      ...(searchLine && { name: { $regex: searchLine } }), // Используем regex для поиска по названию города
+      ...(searchLine && { name: { $regex: searchLine } }),
     }),
   }
   const path = 'classes/City'
-  return axios.get(path, { params })
+  return axiosClient.get(path, { params })
 }
 
 export { getCities }

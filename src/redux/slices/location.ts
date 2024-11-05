@@ -1,5 +1,5 @@
-import { GetCitiesType, LocationResponse } from '@/src/types/redux/location'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { GetCitiesType, GetLocationResponseArr, LocationResponse } from '@/src/types/redux/location'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: LocationResponse = {
   data: [],
@@ -13,20 +13,20 @@ const locationSlice = createSlice({
   initialState,
   reducers: {
     getLocationRequested: (state, action: PayloadAction<GetCitiesType>) => {
-      state.loading = true
-      state.error = null
+      state.loading = true;
+      state.error = null;
     },
-    getLocationSucceed: (state, action: PayloadAction<{ results: LocationResponse['data']; hasMore: boolean }>) => {
-      state.loading = false
-      state.data = [...state.data, ...action.payload.results]
-      state.hasMore = action.payload.hasMore
+    getLocationSucceed: (state, action: PayloadAction<{ results: GetLocationResponseArr[]; hasMore: boolean }>) => {
+      state.loading = false;
+      state.data = action.payload.results;
+      state.hasMore = action.payload.hasMore;
     },
     getLocationFailed: (state, action: PayloadAction<string>) => {
-      state.loading = false
-      state.error = action.payload
+      state.loading = false;
+      state.error = action.payload;
     },
   },
 })
 
-export const { getLocationRequested, getLocationSucceed, getLocationFailed } = locationSlice.actions
-export default locationSlice.reducer
+export const { getLocationRequested, getLocationSucceed, getLocationFailed } = locationSlice.actions;
+export default locationSlice.reducer;

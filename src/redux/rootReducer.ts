@@ -12,7 +12,7 @@ import pro from './slices/pro'
 import myAds from './slices/myAds'
 import location from './slices/location'
 
-const combineReducer = combineReducers({
+const rootReducer = combineReducers({
   mainSearch,
   auth,
   filters,
@@ -26,6 +26,6 @@ const combineReducer = combineReducers({
   location,
 })
 
-export type RootState = ReturnType<typeof combineReducer>
+export type RootState = ReturnType<typeof rootReducer>
 
-export default combineReducer
+export default rootReducer

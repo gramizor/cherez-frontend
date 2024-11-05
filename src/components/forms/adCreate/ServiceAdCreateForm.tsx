@@ -13,6 +13,7 @@ import SimpleParamsField from '@/src/components/fields/SimpleParamsField'
 import SimpleLocationField from '@/src/components/fields/SimpleLocationField'
 import Button from '@mui/material/Button'
 import SimpleFileUploader from '@/src/components/fields/SimpleFileUploader'
+import { CountriesType } from '@/src/enums/countries'
 
 const ServiceAdCreateForm: React.FC<adCreateFormProps> = ({
   currentInitialValues,
@@ -48,6 +49,7 @@ const ServiceAdCreateForm: React.FC<adCreateFormProps> = ({
     images: currentInitialValues?.images || [],
     objectId: objectId || null,
   }
+  console.log(initialValues)
 
   const formik = useFormik({
     validationSchema,
@@ -82,7 +84,7 @@ const ServiceAdCreateForm: React.FC<adCreateFormProps> = ({
             <Box width={{ xs: 'calc(100% - 116px)', md: 'calc(100% - 212px)', lg: 'calc(100% - 219px)' }}>
               <SimpleTextField
                 label={t('forms:price')}
-                handleChange={formik.handleChange}
+                handleChange={e => formik.setFieldValue('price', Number(e.target.value))}
                 name={'price'}
                 touched={formik.touched.price}
                 error={formik.errors.price}
@@ -123,7 +125,7 @@ const ServiceAdCreateForm: React.FC<adCreateFormProps> = ({
 
         <Grid item xs={12} mt={{ xs: 5, md: 20 }}>
           <SimpleLocationField
-            countryValue={formik.values.country}
+            countryValue={formik.values.country as CountriesType}
             cityValue={formik.values.city}
             handleCountryChange={id => formik.setFieldValue('country', id, true)}
             handleCityChange={id => formik.setFieldValue('city', id, true)}

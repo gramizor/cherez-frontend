@@ -1,5 +1,3 @@
-/** @type {import('next').NextConfig} */
-
 const { i18n } = require('./next-i18next.config')
 
 const nextConfig = {
@@ -11,7 +9,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  i18n,
+  i18n: {
+    locales: i18n.locales,
+    defaultLocale: i18n.defaultLocale,
+  },
   env: {
     API_SERVER_URL: process.env.API_SERVER_URL,
     API_CITIES_URL: process.env.API_CITIES_URL,

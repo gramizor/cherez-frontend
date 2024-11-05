@@ -4,8 +4,8 @@ module.exports = {
   i18n: {
     localeDetection: false,
     locales: ['ru-RU', 'en-US'],
-    localePath: path.resolve('./public/locales'),
     defaultLocale: 'ru-RU',
+    localePath: path.resolve('./public/locales'),
     domains: [
       {
         domain: 'cherez-frontend.vercel.app',
