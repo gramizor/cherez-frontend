@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware, { Task } from 'redux-saga'
 import { createWrapper } from 'next-redux-wrapper'
 import { Store } from 'redux'
@@ -14,14 +14,12 @@ const makeStore = () => {
 
   const store: SagaStore = configureStore({
     reducer: rootReducer,
-    middleware: [
-      ...getDefaultMiddleware({
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
         thunk: true,
         serializableCheck: false,
         immutableCheck: false,
-      }),
-      sagaMiddleware,
-    ],
+      }).concat(sagaMiddleware),
     devTools: true,
   })
 
