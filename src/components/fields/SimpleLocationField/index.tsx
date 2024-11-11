@@ -53,6 +53,10 @@ const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, han
     setCities(locationState)
   }, [locationState])
 
+  useEffect(() => {
+    setInputValue(cityValue)
+  }, [cityValue])
+
   const debouncedFetchCities = useMemo(
     () =>
       debounce((value: string) => {
@@ -77,10 +81,8 @@ const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, han
   }, [inputValue, debouncedFetchCities])
 
   useEffect(() => {
-    if (cityValue) {
-      setInputValue(cityValue)
-    }
-  }, [])
+    setInputValue(cityValue)
+  }, [cityValue])
 
   return (
     <Box>
@@ -112,6 +114,7 @@ const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, han
         {t('input_city')}
       </Typography>
       <Autocomplete
+        freeSolo
         disabled={!country}
         sx={{
           mb: { xs: 4, md: 13 },
@@ -124,9 +127,14 @@ const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, han
         renderInput={params => <TextField {...params} sx={{ maxWidth: { xs: '100%', md: 331 } }} label={''} />}
         inputValue={inputValue}
         onInputChange={(_, value) => {
+          setInputValue(value)
           if (!cityValue || value !== cityValue) {
-            setInputValue(value)
             debouncedFetchCities(value)
+          }
+        }}
+        onBlur={() => {
+          if (inputValue && !cities.find(city => city.name === inputValue)) {
+            handleCityChange(inputValue)
           }
         }}
         onOpen={() => {
@@ -134,13 +142,14 @@ const SimpleLocationField = ({ countryValue, cityValue, handleCountryChange, han
             fetchCities('')
           }
         }}
-        getOptionLabel={option => option.name || ''}
-        value={cityValue ? cities.find(city => city.name === cityValue) || null : null}
+        getOptionLabel={option => (typeof option === 'string' ? option : option.name)}
+        value={cityValue ? cityValue : cities.find(city => city.name === cityValue) || null}
         onChange={(_, selectedOption) => {
-          handleCityChange(selectedOption ? selectedOption.name : '')
-          setInputValue(selectedOption ? selectedOption.name : '')
+          const newValue = typeof selectedOption === 'string' ? selectedOption : selectedOption?.name || ''
+          handleCityChange(newValue)
+          setInputValue(newValue)
         }}
-        isOptionEqualToValue={(option, value) => option.objectId === value?.objectId}
+        isOptionEqualToValue={(option, value) => option.name === value?.name}
       />
     </Box>
   )

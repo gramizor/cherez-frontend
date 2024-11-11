@@ -63,5 +63,6 @@
   "draft": "Draft",
   "done_pro": "Completed",
   "days_until": "Days until deletion",
-  "save": "Save"
+  "save": "Save",
+  "no_cities": "No cities"
 }

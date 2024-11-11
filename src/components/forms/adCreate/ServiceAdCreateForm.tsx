@@ -49,7 +49,6 @@ const ServiceAdCreateForm: React.FC<adCreateFormProps> = ({
     images: currentInitialValues?.images || [],
     objectId: objectId || null,
   }
-  console.log(initialValues)
 
   const formik = useFormik({
     validationSchema,
